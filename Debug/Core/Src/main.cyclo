@@ -1,0 +1,16 @@
+main.cpp:78:9:int32_t constrain(int32_t, int32_t, int32_t)	3
+main.cpp:89:2:Motor::Motor(TIM_HandleTypeDef*)	1
+main.cpp:105:7:void Motor::returnMotor(uint32_t)	3
+main.cpp:119:7:void Motor::setEncoderValue()	1
+main.cpp:128:10:int32_t Motor::getEncoderValue()	1
+main.cpp:172:5:PID::PID(double, double, double)	1
+main.cpp:376:5:int main()	1
+main.cpp:513:6:void SystemClock_Config()	3
+main.cpp:559:13:void MX_I2C1_Init()	2
+main.cpp:593:13:void MX_TIM1_Init()	5
+main.cpp:657:13:void MX_TIM2_Init()	3
+main.cpp:706:13:void MX_TIM4_Init()	3
+main.cpp:755:13:void MX_USART1_UART_Init()	2
+main.cpp:788:13:void MX_USART2_UART_Init()	2
+main.cpp:821:13:void MX_GPIO_Init()	1
+main.cpp:865:6:void Error_Handler()	1
