@@ -9,12 +9,16 @@
 #define MIN_MOT_PWM 1000
 
 #define MAX_MOT_SPEED 175
+#define TURN_SPEED 100
 
 #define ZERO 0
 
 #define MOT_PER_SIDE 2
 
-#define MOT_PWM_TIM &htim1
+#define ENC_SET_VALUE 20000
+
+#define MOT_R_PWM_TIM &htim1
+#define MOT_L_PWM_TIM &htim1
 #define ENC_LEFT_TIM &htim1
 #define ENC_RIGHT_TIM &htim1
 

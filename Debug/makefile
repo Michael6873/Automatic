@@ -75,8 +75,8 @@ all: main-build
 main-build: f4_uart.elf secondary-outputs
 
 # Tool invocations
-f4_uart.elf f4_uart.map: $(OBJS) $(USER_OBJS) C:\Users\Lazarev\STM32CubeIDE\workspace_1.12.1\f4_uart\STM32F411CEUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "f4_uart.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Lazarev\STM32CubeIDE\workspace_1.12.1\f4_uart\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="f4_uart.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+f4_uart.elf f4_uart.map: $(OBJS) $(USER_OBJS) C:\Users\Mihail\STM32CubeIDE\workspace_1.12.0\f4_uart\STM32F411CEUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "f4_uart.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Mihail\STM32CubeIDE\workspace_1.12.0\f4_uart\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="f4_uart.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

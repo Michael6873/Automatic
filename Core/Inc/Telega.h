@@ -8,24 +8,27 @@ class Telega{
 
 public:
 
+	Telega(){
+		leftMotor(ENC_LEFT_TIM,MOT_L_PWM_TIM,CHANNEL1);
+		rightMotor(ENC_RIGHT_TIM,MOT_R_PWM_TIM,CHANNEL3);
+	};
+
 	void handler(){
-		for(int i = 0;i<MOT_PER_SIDE;i++){
-			leftMotor[i].handler();
-			RightMotor[i].handler();
-		}
+			leftMotor.handler();
+			rightMotor.handler();
 	}
-	void setMotorSpeed(uint32_t){
-		for(int i)
+	void setRobotSpeed(uint32_t linSpeed, uint32_t angSpeed){
+		setMotorSpeed(linSpeed+angSpeed,linSpeed-angSpeed);
 	}
+
 private:
-	Motor leftMotor[MOT_PER_SIDE] = {
-		Motor(MOT_PWM_TIM,CHANNEL1),
-		Motor(MOT_PWM_TIM,CHANNEL2)
-	};
-	Motor RightMotor[MOT_PER_SIDE] = {
-		Motor(MOT_PWM_TIM,CHANNEL3),
-		Motor(MOT_PWM_TIM,CHANNEL4)
-	};
+
+	void setMotorSpeed(uint32_t lSpd, uint32_t rSpd){
+			leftMotor.setTargetSpeed(lSpd);
+			rightMotor.setTargetSpeed(rSpd);
+	}
+
+	Motor leftMotor,rightMotor;
 };
 
 

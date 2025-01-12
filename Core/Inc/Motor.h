@@ -37,16 +37,12 @@ public:
 private:
 
 	void calcCurSpeedMotor(){
-			if (HAL_GetTick()-time>=FAST_CYCLE){
-				time = HAL_GetTick();
 				enc.handler();
-				currentSpeed = ((abs(enc.getPreviousPosition()-enc.getEncoderValue()))*60000)/(ENC_MAX*FAST_CYCLE);
-				enc.setPreviousPosition(enc.getEncoderValue());
-			}
+				currentSpeed = ((ENC_SET_VALUE-enc.getEncoderValue())*60000)/(ENC_MAX*FAST_CYCLE);
 		}
 	void setMotorPWM(int32_t PWM){
 
-		if (ctrlTimCh<=CHANNEL2){
+		if (ctrlTimCh == CHANNEL1||ctrlTimCh == CHANNEL2){
 			if (PWM>0){
 				__HAL_TIM_SET_COMPARE(ctrlTim, CHANNEL2, ZERO);
 				__HAL_TIM_SET_COMPARE(ctrlTim, CHANNEL1, PWM);
@@ -58,7 +54,7 @@ private:
 			}
 		}
 
-		if (ctrlTimCh>=CHANNEL3){
+		if (ctrlTimCh == CHANNEL3||ctrlTimCh == CHANNEL4){
 			if (PWM>0){
 				__HAL_TIM_SET_COMPARE(ctrlTim, CHANNEL4, ZERO);
 				__HAL_TIM_SET_COMPARE(ctrlTim, CHANNEL3, PWM);

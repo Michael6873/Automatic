@@ -14,7 +14,7 @@ public:
 
 	void handler() {
 		encoderValue = (int32_t)__HAL_TIM_GET_COUNTER(encTim);
-		__HAL_TIM_SET_COUNTER(encTim, 20000);
+		__HAL_TIM_SET_COUNTER(encTim, ENC_SET_VALUE);
 	}
 
 	int32_t getEncoderValue(){
