@@ -93,6 +93,8 @@ public:
     float getDistances(int i = 0);
     // retrieve currently received sample point
 
+    int32_t getErrorAngle();
+
     const RPLidarMeasurement & getCurrentPoint()
     {
         return _currentMeasurement;

@@ -5,6 +5,7 @@
  *      Author: Mihail
  */
 #include "RPLidar.h"
+#include <limits>
 
 extern UART_HandleTypeDef huart2; // Дескриптор UART1
 static bool uart1_is_open = false;
@@ -31,9 +32,6 @@ RPLidar::RPLidar() {
     _currentMeasurement.angle = 0;
     _currentMeasurement.quality = 0;
     _currentMeasurement.startBit = 0;
-
-
-
 }
 
 
@@ -352,12 +350,13 @@ uint32_t RPLidar::waitPoint(uint32_t timeout) {
             float newAngle = _currentMeasurement.angle;
             float newDistance = _currentMeasurement.distance;
 
-            if (newDistance>200){
+            if (newDistance>150){
 				if (newAngle>=0&&newAngle<=360)
 					if (newDistance != distances[(int)newAngle]) {
 						distances[(int)newAngle] = newDistance; // Сохраняем  расстояние
 				}
             }
+
 
             return RESULT_OK; // Успешное завершение
         }
@@ -365,5 +364,19 @@ uint32_t RPLidar::waitPoint(uint32_t timeout) {
 
     // Если таймаут истёк
     return RESULT_OPERATION_TIMEOUT;
+}
+
+int32_t RPLidar::getErrorAngle(){
+	int32_t errorAngle = 0;
+	int32_t minDistance = 10000;
+	  for(int i = 0;i<=360;i++){
+
+		  if(distances[i]<minDistance){
+			  minDistance = distances[i];
+			  if(i>180) errorAngle = (360-i);
+			  else errorAngle = -i;
+		  }
+	  }
+	  return errorAngle;
 }
 

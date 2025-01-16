@@ -15,6 +15,10 @@ public:
 
         return kp * error + ki * integral + kd * derivative;
     }
+    void clear(){
+    	prevError = 0;
+    	integral = 0;
+    }
 
 private:
     double kp, ki, kd; // Коэффициенты PID

@@ -1,14 +1,15 @@
-../Core/Src/RPLidar.cpp:13:6:void RPLidar::end()	16	static
-../Core/Src/RPLidar.cpp:21:6:bool RPLidar::isOpen()	16	static
-../Core/Src/RPLidar.cpp:25:1:RPLidar::RPLidar()	24	static
-../Core/Src/RPLidar.cpp:40:1:RPLidar::~RPLidar()	16	static
-../Core/Src/RPLidar.cpp:47:6:bool RPLidar::begin()	16	static
-../Core/Src/RPLidar.cpp:73:10:uint32_t RPLidar::_sendCommand(uint8_t, const void*, size_t)	40	static
-../Core/Src/RPLidar.cpp:129:10:uint32_t RPLidar::_waitResponseHeader(rplidar_ans_header_t*, uint32_t)	40	static
-../Core/Src/RPLidar.cpp:169:10:uint32_t RPLidar::getHealth(rplidar_response_device_health_t&, uint32_t)	56	static
-../Core/Src/RPLidar.cpp:212:10:uint32_t RPLidar::getDeviceInfo(rplidar_response_device_info_t&, uint32_t)	56	static
-../Core/Src/RPLidar.cpp:261:10:uint32_t RPLidar::stop()	24	static
-../Core/Src/RPLidar.cpp:268:10:uint32_t RPLidar::startScan(bool, uint32_t)	40	static
-../Core/Src/RPLidar.cpp:296:7:float RPLidar::getDistances(int)	16	static
-../Core/Src/RPLidar.cpp:300:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	24	static
-../Core/Src/RPLidar.cpp:306:10:uint32_t RPLidar::waitPoint(uint32_t)	56	static
+../Core/Src/RPLidar.cpp:14:6:void RPLidar::end()	16	static
+../Core/Src/RPLidar.cpp:22:6:bool RPLidar::isOpen()	16	static
+../Core/Src/RPLidar.cpp:26:1:RPLidar::RPLidar()	24	static
+../Core/Src/RPLidar.cpp:38:1:RPLidar::~RPLidar()	16	static
+../Core/Src/RPLidar.cpp:45:6:bool RPLidar::begin()	16	static
+../Core/Src/RPLidar.cpp:71:10:uint32_t RPLidar::_sendCommand(uint8_t, const void*, size_t)	40	static
+../Core/Src/RPLidar.cpp:127:10:uint32_t RPLidar::_waitResponseHeader(rplidar_ans_header_t*, uint32_t)	40	static
+../Core/Src/RPLidar.cpp:167:10:uint32_t RPLidar::getHealth(rplidar_response_device_health_t&, uint32_t)	56	static
+../Core/Src/RPLidar.cpp:210:10:uint32_t RPLidar::getDeviceInfo(rplidar_response_device_info_t&, uint32_t)	56	static
+../Core/Src/RPLidar.cpp:259:10:uint32_t RPLidar::stop()	24	static
+../Core/Src/RPLidar.cpp:266:10:uint32_t RPLidar::startScan(bool, uint32_t)	40	static
+../Core/Src/RPLidar.cpp:294:7:float RPLidar::getDistances(int)	16	static
+../Core/Src/RPLidar.cpp:298:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	24	static
+../Core/Src/RPLidar.cpp:304:10:uint32_t RPLidar::waitPoint(uint32_t)	56	static
+../Core/Src/RPLidar.cpp:369:9:int32_t RPLidar::getErrorAngle()	32	static

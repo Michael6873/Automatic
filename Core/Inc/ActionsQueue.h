@@ -4,6 +4,7 @@
 
 #include "queue"
 #include <Telega.h>
+#include <RPLidar.h>
 
 enum ACTIONS
 {
@@ -13,8 +14,7 @@ enum ACTIONS
 	TURN_RIGHT,
 	GO_FORWARD,
 	GO_BACKWARD,
-	SET_SPEED,
-	SET_POINT,
+	SET_SPEED_TURN,
 	DELAY,
 };
 
@@ -22,9 +22,12 @@ class ActionsQueue
 {
 public:
 	
-	ActionsQueue(PathTracker& _path)
-		:pilot(_path) {
-	};		
+	ActionsQueue():pidl(10,0.0005,1){
+	};
+	void init(){
+		lid.begin();
+		lid.startScan();
+	}
 
 	void push(ACTIONS action) {
 		rQueue.push(RobotInstruction(action));
@@ -61,6 +64,7 @@ public:
 
 	void fastCycle() {
 
+		int32_t K,Y;
 		if (rQueue.empty()) {
 			rQueue.push(RobotInstruction(IDLE));
 		}
@@ -70,6 +74,8 @@ public:
 		else
 		{
 			RobotInstruction _curInstr = rQueue.front();
+			if(IS_OK(lid.waitPoint())) ;
+
 			switch (_curInstr.robotAction)
 			{
 			case ACTIONS::IDLE:
@@ -87,12 +93,17 @@ public:
 				rQueue.pop();
 				break;
 			case ACTIONS::GO_FORWARD:
-				telega.setRobotSpeed(MAX_MOT_SPEED*0.6,0);
+				telega.setRobotSpeed(MAX_MOT_SPEED*0.8,0);
 				rQueue.pop();
 				break;
 			case ACTIONS::GO_BACKWARD:
-				telega.setRobotSpeed(-MAX_MOT_SPEED*0.6, 0);
+				telega.setRobotSpeed(-MAX_MOT_SPEED*0.8, 0);
 				rQueue.pop();
+				break;
+			case ACTIONS::SET_SPEED_TURN:
+				K = lid.getErrorAngle();
+				Y = constrain((int32_t)pidl.calculate(0, K),-MAX_MOT_PWM,MAX_MOT_PWM);
+				telega.setRobotSpeed(0,Y);
 				break;
 			case ACTIONS::DELAY:
 				static uint32_t delayBegin = 0;
@@ -118,7 +129,6 @@ private:
 		bool paramAvalible = false;
 		bool pointAvalible = false;
 		float parametr = 0;
-		Vector2f point;
 
 		RobotInstruction() {};
 		RobotInstruction(ACTIONS _action)
@@ -132,10 +142,11 @@ private:
 			paramAvalible = _instr.paramAvalible;
 			pointAvalible = _instr.pointAvalible;
 			parametr = _instr.parametr;
-			point = _instr.point;
 		}
 	};
 	std::queue<RobotInstruction> rQueue;
+	PID pidl;
+	RPLidar lid;
 	Telega telega;
 
 	bool delayInit = false;

@@ -7,7 +7,7 @@ class Encoder
 {
 public:
 	Encoder(TIM_HandleTypeDef* _encTim)
-		:encTim(_encTim),time(HAL_GetTick())
+		:encTim(_encTim)
 	{
 		//HAL_TIM_Encoder_Start(_encTim, TIM_CHANNEL_1);
 	};
