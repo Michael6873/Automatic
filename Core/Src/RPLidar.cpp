@@ -366,17 +366,3 @@ uint32_t RPLidar::waitPoint(uint32_t timeout) {
     return RESULT_OPERATION_TIMEOUT;
 }
 
-int32_t RPLidar::getErrorAngle(){
-	int32_t errorAngle = 0;
-	int32_t minDistance = 10000;
-	  for(int i = 0;i<=360;i++){
-
-		  if(distances[i]<minDistance){
-			  minDistance = distances[i];
-			  if(i>180) errorAngle = (360-i);
-			  else errorAngle = -i;
-		  }
-	  }
-	  return errorAngle;
-}
-
