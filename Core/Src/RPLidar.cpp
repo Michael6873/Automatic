@@ -291,10 +291,13 @@ uint32_t RPLidar::startScan(bool force, uint32_t timeout) {
 
     return RESULT_OK;
 }
+float* RPLidar::getDistances() {  // Аргумент по умолчанию здесь не указывается
+    return distances;
+}
+
 float RPLidar::getDistances(int i) {  // Аргумент по умолчанию здесь не указывается
     return distances[i];
 }
-
 float RPLidar::constrain(int32_t value,int32_t num1,int32_t num2){
 	if (value>num2) value = num2;
 	if (value<num1) value = num1;

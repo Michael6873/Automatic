@@ -5,6 +5,7 @@
 #include "queue"
 #include <Telega.h>
 #include <RPLidar.h>
+#include <TanControl.h>
 
 enum ACTIONS
 {
@@ -64,7 +65,7 @@ public:
 
 	void fastCycle() {
 
-		int32_t K,Y;
+		float K,Y;
 		if (rQueue.empty()) {
 			rQueue.push(RobotInstruction(IDLE));
 		}
@@ -101,9 +102,9 @@ public:
 				rQueue.pop();
 				break;
 			case ACTIONS::SET_SPEED_TURN:
-				K = lid.getErrorAngle();
-				Y = constrain((int32_t)pidl.calculate(0, K),-MAX_MOT_PWM,MAX_MOT_PWM);
-				telega.setRobotSpeed(0,Y);
+				K = tan.getErrorAngle(lid.getDistances());
+				spd = tan.calcTgtRobotSpds(lid.getDistances((int32_t)K), K);
+				telega.setRobotSpeed(spd.lin,spd.ang);
 				break;
 			case ACTIONS::DELAY:
 				static uint32_t delayBegin = 0;
@@ -148,6 +149,8 @@ private:
 	PID pidl;
 	RPLidar lid;
 	Telega telega;
+	TanControl tan;
+	Spd spd;
 
 	bool delayInit = false;
 };

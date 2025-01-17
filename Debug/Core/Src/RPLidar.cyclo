@@ -9,7 +9,7 @@ RPLidar.cpp:167:10:uint32_t RPLidar::getHealth(rplidar_response_device_health_t&
 RPLidar.cpp:210:10:uint32_t RPLidar::getDeviceInfo(rplidar_response_device_info_t&, uint32_t)	9
 RPLidar.cpp:259:10:uint32_t RPLidar::stop()	2
 RPLidar.cpp:266:10:uint32_t RPLidar::startScan(bool, uint32_t)	7
-RPLidar.cpp:294:7:float RPLidar::getDistances(int)	1
-RPLidar.cpp:298:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	3
-RPLidar.cpp:304:10:uint32_t RPLidar::waitPoint(uint32_t)	12
-RPLidar.cpp:369:9:int32_t RPLidar::getErrorAngle()	4
+RPLidar.cpp:294:8:float* RPLidar::getDistances()	1
+RPLidar.cpp:298:7:float RPLidar::getDistances(int)	1
+RPLidar.cpp:301:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	3
+RPLidar.cpp:307:10:uint32_t RPLidar::waitPoint(uint32_t)	12

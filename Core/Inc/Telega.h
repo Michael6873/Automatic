@@ -18,7 +18,7 @@ public:
 			rightMotor.handler();
 	}
 	void setRobotSpeed(int32_t linSpeed, int32_t angSpeed){
-		setMotorSpeed(linSpeed+angSpeed,linSpeed-angSpeed);
+		setMotorSpeed(linSpeed-angSpeed,linSpeed+angSpeed);
 	}
 
 
@@ -26,7 +26,7 @@ private:
 
 	void setMotorSpeed(int32_t lSpd, int32_t rSpd){
 			leftMotor.setTargetSpeed(lSpd);
-			rightMotor.setTargetSpeed(rSpd);
+			rightMotor.setTargetSpeed(-rSpd);
 	}
 
 	Motor leftMotor,rightMotor;

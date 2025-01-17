@@ -85,15 +85,15 @@ public:
     uint32_t stop();
 
     // start the measurement operation
-    uint32_t startScan(bool force = false, uint32_t timeout = RPLIDAR_DEFAULT_TIMEOUT*2);
+    uint32_t startScan(bool force = false, uint32_t timeout = RPLIDAR_DEFAULT_TIMEOUT*5);
 
     // wait for one sample point to arrive
     uint32_t waitPoint(uint32_t timeout = RPLIDAR_DEFAULT_TIMEOUT);
 
-    float getDistances(int i = 0);
+    float getDistances(int i);
     // retrieve currently received sample point
 
-    int32_t getErrorAngle();
+    float* getDistances();
 
     const RPLidarMeasurement & getCurrentPoint()
     {

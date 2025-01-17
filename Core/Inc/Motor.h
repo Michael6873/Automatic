@@ -52,7 +52,7 @@ private:
 
 	void calcCurSpeedMotor(){
 				enc.handler();
-				currentSpeed = constrain(((ENC_SET_VALUE-enc.getEncoderValue())*60000)/(ENC_MAX*FAST_CYCLE),-MAX_MOT_SPEED,MAX_MOT_SPEED);
+				currentSpeed = constrain(((enc.getEncoderValue())*60000)/(ENC_MAX*FAST_CYCLE),-MAX_MOT_SPEED,MAX_MOT_SPEED);
 		}
 	void setMotorPWM(int32_t PWM){
 
