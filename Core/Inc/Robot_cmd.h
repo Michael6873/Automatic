@@ -9,7 +9,7 @@ extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim4;
 
 #define ENC_MAX 1800 // максимальное число тиков энкодера за оборот
-#define FAST_CYCLE 1 // время в мс для замера скорости двигателей
+#define FAST_CYCLE 1.0/1000 // время в мс для замера скорости двигателей
 
 #define MAX_MOT_PWM 10000
 #define MIN_MOT_PWM 1000

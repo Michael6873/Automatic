@@ -8,18 +8,21 @@
 #ifndef INC_AUTOPILOT_H_
 #define INC_AUTOPILOT_H_
 
-
-
 #pragma once
 #ifndef _AUTO_PILOT_H_
 #define _AUTO_PILOT_H_
 
 
+#include <LineDetector.h>
+#include <ActionsQueue.h>
+
 class AutoPilot {
 public:
-	AutoPilot(Navigation& _nav, LineDetector& _line, PiConnect& _rpi, PathTracker& _path)
-		: nav(_nav), line(_line), rpi(_rpi), path(_path), aQueue(_path)
-	{};
+	AutoPilot(Navigation& _nav, PiConnect& _rpi, PathTracker& _path)
+		: nav(_nav), rpi(_rpi), path(_path), aQueue(_path)
+	{
+		line.init();
+	};
 
 	enum STATES :uint8_t
 	{
@@ -33,7 +36,7 @@ public:
 
 
 	void handler() {
-		static uint32_t enterAvoidLineMs = millis();
+		line.handler();
 		if (curState != IDLE) {
 			if (line.isCrossed()) {
 				curState = AVOID_LINE;
@@ -42,40 +45,13 @@ public:
 
 		switch (curState)
 		{
-		case AutoPilot::IDLE:
-			if (lastState != IDLE) {
-				lastState = IDLE;
-				aQueue.clear();
-				aQueue.push(STOP);
-				aQueue.push(ACTIONS::IDLE);
-				Serial.println("Enter IDLE");
-			}
-			break;
 
 		case AutoPilot::SEARCH:
 			if (lastState != SEARCH) {
 				lastState = SEARCH;
-				aQueue.clear();
-				aQueue.push(TURN_RIGHT);
-				aQueue.push(DELAY, 250);
-				aQueue.push(GO_FORWARD);
-				aQueue.push(DELAY, 1600);
-				aQueue.push(TURN_LEFT);
-				aQueue.push(DELAY, 200);
-				aQueue.push(TURN_RIGHT, 450);
-				Serial.println("Enter SEARCH");
 			}
+				aQueue.push(GO_FORWARD);
 
-			if (aQueue.isClear()) {
-				aQueue.push(GO_FORWARD);
-				aQueue.push(DELAY, 1800);
-				aQueue.push(TURN_LEFT);
-				aQueue.push(DELAY, 100);
-				aQueue.push(TURN_RIGHT);
-				aQueue.push(DELAY, 600);
-				aQueue.push(TURN_LEFT);
-				aQueue.push(DELAY, 100);
-			}
 
 			if (rpi.getEnemyCnt() > 0) {
 				curState = ATACK;
@@ -85,9 +61,8 @@ public:
 		case AutoPilot::ATACK:
 			if (lastState != ATACK) {
 				lastState = ATACK;
-				p.robotMaxSpd = p.robotGndSpd;
-				Serial.println("Enter ATACK");
 			}
+
 			if (rpi.getEnemyPose().norm() < 200) {
 				curState = FIN_ATACK;
 			}
@@ -103,38 +78,35 @@ public:
 		case AutoPilot::FIN_ATACK:
 			if (lastState != FIN_ATACK) {
 				lastState = FIN_ATACK;
-				Serial.println("Enter FIN ATACK");
 				aQueue.clear();
-				aQueue.push(SET_POINT, rpi.getEnemyPose() + Vector2f(500, 0));
-				aQueue.push(DELAY, 1000);
-				p.robotMaxSpd = p.robotAtackSpd;
+				aQueue.push(GO_FORWARD_MAX);
+				aQueue.push(DELAY, 3000);
 			}
 
 			break;
 		case AutoPilot::ENEMY_LOST:
-			break;
-		case AutoPilot::AVOID_LINE:
-			if (lastState != AVOID_LINE) {
-				p.robotMaxSpd = p.robotGndSpd;
-				enterAvoidLineMs = millis();
-				lastState = AVOID_LINE;
-				Serial.println("Enter AVOID");
+			if (lastState != ENEMY_LOST) {
+				lastState = ENEMY_LOST;
 				aQueue.clear();
-				aQueue.push(ACTIONS::GO_BACKWARD);
-				aQueue.push(DELAY, 400);
-				aQueue.push(ACTIONS::TURN_LEFT);
-				aQueue.push(DELAY, 1000);
-				aQueue.push(ACTIONS::GO_FORWARD);
-				//delay(500);
 			}
-			if ((lastState == AVOID_LINE) && (millis() - enterAvoidLineMs > 500)) {
-				//lastState = SEARCH;
-			}
+
 			if (aQueue.isClear()) {
 				curState = SEARCH;
 			}
 			break;
-		default:
+		case AutoPilot::AVOID_LINE:
+			if (lastState != AVOID_LINE) {
+				lastState = AVOID_LINE;
+				aQueue.clear();
+				aQueue.push(ACTIONS::GO_BACKWARD);
+				aQueue.push(DELAY, 400);
+				aQueue.push(ACTIONS::TURN_LEFT);
+				aQueue.push(DELAY, 500);
+				aQueue.push(ACTIONS::GO_FORWARD);
+			}
+			if (aQueue.isClear()) {
+				curState = SEARCH;
+			}
 			break;
 		}
 
@@ -150,11 +122,11 @@ public:
 private:
 	ActionsQueue aQueue;
 	Navigation& nav;
-	LineDetector& line;
+	LineDetector line;
 	PiConnect& rpi;
 	PathTracker& path;
 
-	STATES lastState = IDLE, curState = IDLE;
+	STATES lastState = SEARCH, curState = SEARCH;
 };
 #endif // !_AUTO_PILOT_H_
 

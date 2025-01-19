@@ -2,6 +2,7 @@
 #include "stm32f4xx_hal.h"
 #include <Robot_cmd.h>
 #include <Encoder.h>
+#include <BFilter.h>
 #include <PID.h>
 #include  <cmath>
 
@@ -9,6 +10,12 @@
 #define INC_MOTOR_H_
 
 	int32_t constrain(int32_t value,int32_t num1,int32_t num2){
+		if (value>num2) value = num2;
+		if (value<num1) value = num1;
+		return value;
+	}
+
+	float constrain(float value,float num1,float num2){
 		if (value>num2) value = num2;
 		if (value<num1) value = num1;
 		return value;
@@ -23,20 +30,20 @@ public:
 	{};
 
 
-	int32_t getTargetSpeed(){
+	float getTargetSpeed(){
 		return targetSpeed;
 	}
-	int32_t getCurrentSpeed(){
+	float getCurrentSpeed(){
 		return currentSpeed;
 	}
-	void setTargetSpeed(int32_t speed){
+	void setTargetSpeed(float speed){
 		targetSpeed = speed;
 		targetSpeed = constrain(targetSpeed,-MAX_MOT_SPEED,MAX_MOT_SPEED);
 	}
 	void handler(){
 		calcCurSpeedMotor();
 		pidClear();
-		setMotorPWM(pid.calculate(targetSpeed, currentSpeed));
+		setMotorPWM((int32_t)pid.calculate(targetSpeed, currentSpeed));
 	}
 
 	void pidClear(){
@@ -52,7 +59,8 @@ private:
 
 	void calcCurSpeedMotor(){
 				enc.handler();
-				currentSpeed = constrain(((enc.getEncoderValue())*60000)/(ENC_MAX*FAST_CYCLE),-MAX_MOT_SPEED,MAX_MOT_SPEED);
+				currentSpeed = ((enc.getEncoderValue())*60)/(ENC_MAX);
+				currentSpeed = filt.calc(currentSpeed);
 		}
 	void setMotorPWM(int32_t PWM){
 
@@ -85,6 +93,7 @@ private:
 
 	Encoder enc;
 	PID pid;
+	BFilter filt;
 
 	TIM_HandleTypeDef *ctrlTim;
 	uint32_t ctrlTimCh;

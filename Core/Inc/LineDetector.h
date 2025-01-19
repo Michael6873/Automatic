@@ -12,10 +12,14 @@
 
 class LineDetector {
 public:
-	LineDetector()	{};
+	LineDetector()	{
+	};
+	void init(){
+		sens.init();
+	}
 	void handler() {
 		if (HAL-GetTick() - lastMs > delayMs) {
-				if ((collor.get < whiteTh) && (collor.red < redTh) && (collor.green < greenTh) && (collor.blue < blueTh)) {
+				if ((sens.getColorWhite() < whiteTh) && (sens.getColorRed() < redTh) && (sens.getColorGreen() < greenTh) && (sens.getColorBlue() < blueTh)) {
 					lineIsCrosed = true;
 				}
 				else {
@@ -33,6 +37,7 @@ private:
 	bool lineIsCrosed = false;
 	static const uint16_t whiteTh = 0x250, redTh = 200, greenTh = 200, blueTh = 200;
 	TCS3472 collor;
+	ColorSens sens;
 	uint32_t lastMs = HAL_GetTick();
 };
 #endif // !_LINE_DETECTOR_H

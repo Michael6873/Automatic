@@ -17,6 +17,7 @@ enum ACTIONS
 	GO_BACKWARD,
 	SET_SPEED_TURN,
 	DELAY,
+	GO_FORWARD_MAX,
 };
 
 class ActionsQueue
@@ -95,6 +96,10 @@ public:
 				break;
 			case ACTIONS::GO_FORWARD:
 				telega.setRobotSpeed(MAX_MOT_SPEED*0.8,0);
+				rQueue.pop();
+				break;
+			case ACTIONS::GO_FORWARD_MAX:
+				telega.setRobotSpeed(MAX_MOT_SPEED,0);
 				rQueue.pop();
 				break;
 			case ACTIONS::GO_BACKWARD:
