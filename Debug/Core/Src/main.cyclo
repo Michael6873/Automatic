@@ -1,6 +1,6 @@
 std_abs.h:56:3:long int std::abs(long int)	1
-std_abs.h:75:3:constexpr float std::abs(float)	1
 cmath:184:3:constexpr float std::cos(float)	1
+cmath:241:3:constexpr float std::fabs(float)	1
 cmath:425:3:constexpr float std::sin(float)	1
 cmath:501:3:constexpr float std::tanh(float)	1
 new:174:33:void* operator new(std::size_t, void*)	1
@@ -29,10 +29,10 @@ Telega.h:11:2:Telega::Telega()	1
 Telega.h:16:7:void Telega::handler()	1
 Telega.h:20:7:void Telega::setRobotSpeed(float, float)	1
 Telega.h:43:7:void Telega::setMotorSpeed(float, float)	1
-TanControl.h:12:6:Spd TanControl::calcTgtRobotSpds(float, float)	1
-TanControl.h:19:8:float TanControl::getErrorAngle(float*)	4
-TanControl.h:31:8:float TanControl::limitAng(float)	3
-TanControl.h:42:7:void TanControl::clearSpd()	1
+TanControl.h:12:6:Spd TanControl::calcTgtRobotSpds(float, float)	3
+TanControl.h:30:8:float TanControl::getErrorAngle(float*)	4
+TanControl.h:42:8:float TanControl::limitAng(float)	3
+TanControl.h:53:7:void TanControl::clearSpd()	1
 stl_queue.h:96:11:std::queue<ActionsQueue::RobotInstruction>::~queue()	1
 Telega.h:7:7:Telega::~Telega()	1
 ActionsQueue.h:27:2:ActionsQueue::ActionsQueue()	1

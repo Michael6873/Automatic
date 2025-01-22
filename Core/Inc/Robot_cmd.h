@@ -17,7 +17,7 @@ extern TIM_HandleTypeDef htim4;
 #define MAX_MOT_SPEED 100
 #define TURN_SPEED 100
 
-#define K_ANG 0.3
+#define K_ANG 0.5
 #define HALF_CIRCLE 180
 
 #define ZERO 0

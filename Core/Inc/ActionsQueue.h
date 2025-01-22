@@ -67,6 +67,7 @@ public:
 	void fastCycle() {
 
 		float ang,angLimit,Spd;
+		static uint32_t count = 0;
 		if (rQueue.empty()) {
 			rQueue.push(RobotInstruction(IDLE));
 		}
@@ -107,14 +108,13 @@ public:
 				rQueue.pop();
 				break;
 			case ACTIONS::SET_SPEED_TURN:
-				ang = tan.getErrorAngle(lid.getDistances());
-				angLimit = tan.limitAng(ang);
-				spd = tan.calcTgtRobotSpds(lid.getDistances((uint32_t)ang), angLimit);
-
-				if (abs(angLimit)>90){
-					spd.lin = 0.0f;
-				}
-				telega.setRobotSpeed(-spd.lin,-spd.ang);
+			    ang = tan.getErrorAngle(lid.getDistances()); // Угол с минимальным расстоянием
+			    if (ang) {
+			        angLimit = tan.limitAng(ang); // Ограничение угла [-180, 180]
+			        float minDist = lid.getDistances((uint32_t)ang); // Минимальное расстояние
+			        spd = tan.calcTgtRobotSpds(minDist, angLimit);
+			        telega.setRobotSpeed(spd.lin, -spd.ang); // Угловая скорость инвертирована
+			    }
 				break;
 			case ACTIONS::DELAY:
 				static uint32_t delayBegin = 0;

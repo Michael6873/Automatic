@@ -10,10 +10,21 @@ struct Spd{
 class TanControl{
 public:
 	Spd calcTgtRobotSpds(float dist, float ang) {
-		clearSpd();
-		spd.lin = MAX_MOT_SPEED * tanh(dist) * cos(ang);
-		spd.ang = K_ANG * ang + spd.lin * sin(ang) / dist;
-		return spd;
+	    // Минимальное ограничение на расстояние для предотвращения деления на 0
+	    if (dist < 0.01f) dist = 0.01f;
+
+	    clearSpd();
+
+	    if (fabs(ang) > 90.0f) {
+	        // Если угол больше 90 градусов, отключаем линейное движение
+	        spd.lin = 0.0f;
+	        spd.ang = K_ANG * ang; // Только угловое движение
+	    } else {
+	        // Тангенциальное управление для углов в диапазоне [-90, 90]
+	        spd.lin = MAX_MOT_SPEED * tanh(dist) * cos(ang);
+	        spd.ang = K_ANG * ang + spd.lin * sin(ang) / dist;
+	    }
+	    return spd;
 	}
 
 	float getErrorAngle(float *distances){

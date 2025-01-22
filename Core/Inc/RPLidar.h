@@ -95,6 +95,8 @@ public:
 
     float* getDistances();
 
+    void clearDistances();
+
     void setDistances(uint32_t i, float value);
 
     const RPLidarMeasurement & getCurrentPoint()

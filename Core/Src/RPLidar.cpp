@@ -25,9 +25,7 @@ bool RPLidar::isOpen() {
 
 RPLidar::RPLidar() {
 
-    for (int i = 0; i < sizeof(distances) / sizeof(distances[0]); ++i) {
-        distances[i] = 0.0f;
-    }
+	clearDistances();
     _currentMeasurement.distance = 0;
     _currentMeasurement.angle = 0;
     _currentMeasurement.quality = 0;
@@ -298,6 +296,13 @@ float* RPLidar::getDistances() {  // Аргумент по умолчанию з
 void RPLidar::setDistances(uint32_t i, float value){
 	distances[i] = value;
 }
+
+void RPLidar::clearDistances(){
+    for (int i = 0; i < sizeof(distances) / sizeof(distances[0]); ++i) {
+        distances[i] = 0.0f;
+    }
+}
+
 
 float RPLidar::getDistances(int i) {  // Аргумент по умолчанию здесь не указывается
     return distances[i];

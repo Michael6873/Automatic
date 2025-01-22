@@ -1,16 +1,17 @@
 RPLidar.cpp:14:6:void RPLidar::end()	2
 RPLidar.cpp:22:6:bool RPLidar::isOpen()	1
-RPLidar.cpp:26:1:RPLidar::RPLidar()	2
-RPLidar.cpp:38:1:RPLidar::~RPLidar()	1
-RPLidar.cpp:45:6:bool RPLidar::begin()	2
-RPLidar.cpp:71:10:uint32_t RPLidar::_sendCommand(uint8_t, const void*, size_t)	9
-RPLidar.cpp:127:10:uint32_t RPLidar::_waitResponseHeader(rplidar_ans_header_t*, uint32_t)	9
-RPLidar.cpp:167:10:uint32_t RPLidar::getHealth(rplidar_response_device_health_t&, uint32_t)	10
-RPLidar.cpp:210:10:uint32_t RPLidar::getDeviceInfo(rplidar_response_device_info_t&, uint32_t)	9
-RPLidar.cpp:259:10:uint32_t RPLidar::stop()	2
-RPLidar.cpp:266:10:uint32_t RPLidar::startScan(bool, uint32_t)	7
-RPLidar.cpp:294:8:float* RPLidar::getDistances()	1
-RPLidar.cpp:298:6:void RPLidar::setDistances(uint32_t, float)	1
-RPLidar.cpp:302:7:float RPLidar::getDistances(int)	1
-RPLidar.cpp:305:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	3
-RPLidar.cpp:311:10:uint32_t RPLidar::waitPoint(uint32_t)	12
+RPLidar.cpp:26:1:RPLidar::RPLidar()	1
+RPLidar.cpp:36:1:RPLidar::~RPLidar()	1
+RPLidar.cpp:43:6:bool RPLidar::begin()	2
+RPLidar.cpp:69:10:uint32_t RPLidar::_sendCommand(uint8_t, const void*, size_t)	9
+RPLidar.cpp:125:10:uint32_t RPLidar::_waitResponseHeader(rplidar_ans_header_t*, uint32_t)	9
+RPLidar.cpp:165:10:uint32_t RPLidar::getHealth(rplidar_response_device_health_t&, uint32_t)	10
+RPLidar.cpp:208:10:uint32_t RPLidar::getDeviceInfo(rplidar_response_device_info_t&, uint32_t)	9
+RPLidar.cpp:257:10:uint32_t RPLidar::stop()	2
+RPLidar.cpp:264:10:uint32_t RPLidar::startScan(bool, uint32_t)	7
+RPLidar.cpp:292:8:float* RPLidar::getDistances()	1
+RPLidar.cpp:296:6:void RPLidar::setDistances(uint32_t, float)	1
+RPLidar.cpp:300:6:void RPLidar::clearDistances()	2
+RPLidar.cpp:307:7:float RPLidar::getDistances(int)	1
+RPLidar.cpp:310:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	3
+RPLidar.cpp:316:10:uint32_t RPLidar::waitPoint(uint32_t)	12

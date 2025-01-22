@@ -67,6 +67,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 f4_uart.list \
 
+OBJCOPY_HEX += \
+f4_uart.hex \
+
 
 # All Target
 all: main-build
@@ -75,8 +78,8 @@ all: main-build
 main-build: f4_uart.elf secondary-outputs
 
 # Tool invocations
-f4_uart.elf f4_uart.map: $(OBJS) $(USER_OBJS) C:\Users\Lazarev\STM32CubeIDE\workspace_1.12.1\f4_uart\STM32F411CEUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "f4_uart.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Lazarev\STM32CubeIDE\workspace_1.12.1\f4_uart\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="f4_uart.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+f4_uart.elf f4_uart.map: $(OBJS) $(USER_OBJS) C:\Users\Mihail\STM32CubeIDE\workspace_1.12.0\f4_uart\STM32F411CEUX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "f4_uart.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Mihail\STM32CubeIDE\workspace_1.12.0\f4_uart\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="f4_uart.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -90,12 +93,17 @@ f4_uart.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+f4_uart.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "f4_uart.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) default.size.stdout f4_uart.elf f4_uart.list f4_uart.map
+	-$(RM) default.size.stdout f4_uart.elf f4_uart.hex f4_uart.list f4_uart.map
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
