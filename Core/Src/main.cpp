@@ -24,10 +24,9 @@
 #include "stdio.h"
 #include <cstring>
 #include  <cmath>
-#include <TCS3472.h>
+//#include <Telega.h>
 #include  <ActionsQueue.h>
 
-#define ENC_MAX 1800// максимальное количество тиков за оборот
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,12 +39,15 @@ double errorAngle;
 double currentAngle = 0;
 float minDistance = 1000;
 
-float distance = 0;
-float angle = 0;
+float l = 0;
+float r = 0;
 bool  startBit;
 uint8_t  quality;
+int16_t encL = 0;
+int16_t encR = 0;
 
 ActionsQueue Queue;
+//Telega telega;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -63,6 +65,8 @@ TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart2_rx;
+DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
 
@@ -73,6 +77,7 @@ UART_HandleTypeDef huart2;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM2_Init(void);
@@ -91,6 +96,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
         // Действия при срабатывании прерывания
     	Queue.handler();
+    	//telega.handler();
     }
 }
 void init(){
@@ -108,10 +114,9 @@ void init(){
 	  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 
 	  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_1);
-	  HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_2);
 
 	  HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_1);
-	  HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_2);
+
 	  HAL_TIM_Base_Start_IT(&htim1);
 
 }
@@ -145,6 +150,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   MX_TIM2_Init();
@@ -152,10 +158,12 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_Delay(100);
   init();
   Queue.init();
   HAL_Delay(100);
+
+  //telega.setRobotSpeed(160.0, 0.0);
 /*
   // правый двигатель едет вперед ( пр. часовой)
   TIM3->CCR2 = 5000;
@@ -165,23 +173,19 @@ int main(void)
   TIM3->CCR4 = 5000;
   TIM3->CCR3 = 0;
   */
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+//
 
-
-/*
-	  red = tcs.getColorRed();
-	  green = tcs.getColorGreen();
-	  blue = tcs.getColorBlue();
-	  white = tcs.getColorWhite();
-	*/
 
 	  if(Queue.isClear()){
-		  Queue.push(TURN_RIGHT); // Движение вперёд
+		  Queue.push(SET_SPEED_TURN); // Движение вперёд
+
 	  }
 
       Queue.fastCycle();
@@ -507,6 +511,25 @@ static void MX_USART2_UART_Init(void)
   /* USER CODE BEGIN USART2_Init 2 */
 
   /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+  /* DMA1_Stream6_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
 
 }
 

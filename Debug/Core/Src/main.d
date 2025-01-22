@@ -29,10 +29,10 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- ../Core/Inc/TCS3472.h ../Core/Inc/Robot_cmd.h ../Core/Inc/ActionsQueue.h \
- ../Core/Inc/Telega.h ../Core/Inc/Motor.h ../Core/Inc/Encoder.h \
- ../Core/Inc/BFilter.h ../Core/Inc/PID.h ../Core/Inc/RPLidar.h \
- ../Core/Inc/RPlidar_cmd.h ../Core/Inc/TanControl.h
+ ../Core/Inc/ActionsQueue.h ../Core/Inc/Telega.h ../Core/Inc/Motor.h \
+ ../Core/Inc/Robot_cmd.h ../Core/Inc/Encoder.h ../Core/Inc/BFilter.h \
+ ../Core/Inc/PID.h ../Core/Inc/RPLidar.h ../Core/Inc/RPlidar_cmd.h \
+ ../Core/Inc/TanControl.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -64,11 +64,10 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
-../Core/Inc/TCS3472.h:
-../Core/Inc/Robot_cmd.h:
 ../Core/Inc/ActionsQueue.h:
 ../Core/Inc/Telega.h:
 ../Core/Inc/Motor.h:
+../Core/Inc/Robot_cmd.h:
 ../Core/Inc/Encoder.h:
 ../Core/Inc/BFilter.h:
 ../Core/Inc/PID.h:

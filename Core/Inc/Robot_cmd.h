@@ -12,12 +12,12 @@ extern TIM_HandleTypeDef htim4;
 #define FAST_CYCLE 1.0/1000 // время в мс для замера скорости двигателей
 
 #define MAX_MOT_PWM 10000
-#define MIN_MOT_PWM 1000
+#define MIN_MOT_PWM 500
 
 #define MAX_MOT_SPEED 100
 #define TURN_SPEED 100
 
-#define K_ANG 0.08
+#define K_ANG 0.3
 #define HALF_CIRCLE 180
 
 #define ZERO 0

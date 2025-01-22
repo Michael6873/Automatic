@@ -17,18 +17,17 @@ public:
 	}
 
 	float getErrorAngle(float *distances){
-		int32_t errorAngle = 0;
-		int32_t minDistance = 10000;
+		float errorAngle = 0.0f;
+		float minDistance = 10000.0f;
 		  for(int i = 0;i<=360;i++){
 
-			  if(distances[i]<minDistance){
+			  if(distances[i]<minDistance&&distances[i]!=0){
 				  minDistance = distances[i];
-				  errorAngle = limitAng(i);
+				  errorAngle = i;
 			  }
 		  }
 		  return errorAngle;
 	}
-private:
 	float limitAng(float ang){
 		int32_t inAng = ang;
 		while (inAng >= HALF_CIRCLE) {
@@ -39,6 +38,7 @@ private:
 		}
 		return inAng;
 	}
+private:
 	void clearSpd(){
 		spd.lin = 0;
 		spd.ang = 0;

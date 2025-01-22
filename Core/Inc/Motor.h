@@ -15,18 +15,12 @@
 		return value;
 	}
 
-	float constrain(float value,float num1,float num2){
-		if (value>num2) value = num2;
-		if (value<num1) value = num1;
-		return value;
-	}
-
 class Motor{
 
 public:
 
 	Motor(TIM_HandleTypeDef* _encTim,TIM_HandleTypeDef* _ctrlTim, uint8_t _ctrlTimCh):
-		ctrlTim(_ctrlTim),ctrlTimCh(_ctrlTimCh),enc(_encTim),pid(10,0.0005,1)
+		ctrlTim(_ctrlTim),ctrlTimCh(_ctrlTimCh),enc(_encTim),pid(20,0.05,7)
 	{};
 
 
@@ -36,30 +30,26 @@ public:
 	float getCurrentSpeed(){
 		return currentSpeed;
 	}
+
+	int16_t getEncoderValue(){
+		return enc.getEncoderValue();
+	}
 	void setTargetSpeed(float speed){
 		targetSpeed = speed;
 		targetSpeed = constrain(targetSpeed,-MAX_MOT_SPEED,MAX_MOT_SPEED);
 	}
 	void handler(){
 		calcCurSpeedMotor();
-		pidClear();
-		setMotorPWM((int32_t)pid.calculate(targetSpeed, currentSpeed));
-	}
-
-	void pidClear(){
-		static bool helpFlag = true;
-		bool targFlag = (bool)targetSpeed;
-		if(helpFlag!=targFlag) {
-			pid.clear();
-			helpFlag = targFlag;
-		}
+		pid.updateCoefficients(targetSpeed);
+		helpPWM = pid.calculate(targetSpeed, currentSpeed);
+		setMotorPWM(constrain((int32_t)helpPWM,-MAX_MOT_PWM,MAX_MOT_PWM));
 	}
 
 private:
 
 	void calcCurSpeedMotor(){
 				enc.handler();
-				currentSpeed = ((enc.getEncoderValue())*60)/(ENC_MAX);
+				currentSpeed = (((float)enc.getEncoderValue())*60.0)/(ENC_MAX*FAST_CYCLE);
 				currentSpeed = filt.calc(currentSpeed);
 		}
 	void setMotorPWM(int32_t PWM){
@@ -93,16 +83,15 @@ private:
 
 	Encoder enc;
 	PID pid;
-	BFilter filt;
+	BFilter filt = BFilter(BFilter::CalcSecondOrder(5, 1000));;
 
 	TIM_HandleTypeDef *ctrlTim;
 	uint32_t ctrlTimCh;
 
-	int32_t time; // время для подсчета задержки
-	int32_t helpSpeed;
-
-	int32_t currentSpeed;
-	int32_t targetSpeed;
+	float helpPWM;
+	float filtSpeed;
+	float currentSpeed;
+	float targetSpeed;
 
 };
 

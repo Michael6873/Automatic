@@ -17,16 +17,32 @@ public:
 			leftMotor.handler();
 			rightMotor.handler();
 	}
-	void setRobotSpeed(int32_t linSpeed, int32_t angSpeed){
+	void setRobotSpeed(float linSpeed, float angSpeed){
 		setMotorSpeed(linSpeed-angSpeed,linSpeed+angSpeed);
+	}
+
+	float getCurSpL(){
+		return leftMotor.getCurrentSpeed();
+	}
+
+	float getCurSpR(){
+		return rightMotor.getCurrentSpeed();
+	}
+
+	float getCurEncpR(){
+		return rightMotor.getEncoderValue();
+	}
+
+	float getCurEncpL(){
+		return leftMotor.getEncoderValue();
 	}
 
 
 private:
 
-	void setMotorSpeed(int32_t lSpd, int32_t rSpd){
-			leftMotor.setTargetSpeed(lSpd);
-			rightMotor.setTargetSpeed(-rSpd);
+	void setMotorSpeed(float lSpd, float rSpd){
+			leftMotor.setTargetSpeed(-lSpd);
+			rightMotor.setTargetSpeed(rSpd);
 	}
 
 	Motor leftMotor,rightMotor;

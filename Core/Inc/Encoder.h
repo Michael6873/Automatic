@@ -13,14 +13,14 @@ public:
 	};
 
 	void handler() {
-		encoderValue = (int32_t)__HAL_TIM_GET_COUNTER(encTim);
+		encoderValue = (int16_t)__HAL_TIM_GET_COUNTER(encTim);
 		__HAL_TIM_SET_COUNTER(encTim, 0);
 	}
 
-	int32_t getEncoderValue(){
+	int16_t getEncoderValue(){
 		return encoderValue;
 	}
-	int32_t difPreviousPosition(){
+	int16_t difPreviousPosition(){
 		return previousPosition;
 	}
 
@@ -29,9 +29,9 @@ public:
 	}
 private:
 
-	int32_t encoderValue; // значение энкодера
-    int32_t previousPosition; // предыдущее положение
-    int32_t difPosition; // разница текущего и предыдущего знаечений энкодера
+	int16_t encoderValue; // значение энкодера
+    int16_t previousPosition; // предыдущее положение
+    int16_t difPosition; // разница текущего и предыдущего знаечений энкодера
 	TIM_HandleTypeDef* encTim;
 
 };

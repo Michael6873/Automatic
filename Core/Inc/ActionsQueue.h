@@ -66,7 +66,7 @@ public:
 
 	void fastCycle() {
 
-		float K,Y;
+		float ang,angLimit,Spd;
 		if (rQueue.empty()) {
 			rQueue.push(RobotInstruction(IDLE));
 		}
@@ -95,7 +95,7 @@ public:
 				rQueue.pop();
 				break;
 			case ACTIONS::GO_FORWARD:
-				telega.setRobotSpeed(MAX_MOT_SPEED*0.8,0);
+				telega.setRobotSpeed(MAX_MOT_SPEED*0.7,0);
 				rQueue.pop();
 				break;
 			case ACTIONS::GO_FORWARD_MAX:
@@ -103,13 +103,18 @@ public:
 				rQueue.pop();
 				break;
 			case ACTIONS::GO_BACKWARD:
-				telega.setRobotSpeed(-MAX_MOT_SPEED*0.8, 0);
+				telega.setRobotSpeed(-MAX_MOT_SPEED*0.7, 0);
 				rQueue.pop();
 				break;
 			case ACTIONS::SET_SPEED_TURN:
-				K = tan.getErrorAngle(lid.getDistances());
-				spd = tan.calcTgtRobotSpds(lid.getDistances((int32_t)K), K);
-				telega.setRobotSpeed(spd.lin,spd.ang);
+				ang = tan.getErrorAngle(lid.getDistances());
+				angLimit = tan.limitAng(ang);
+				spd = tan.calcTgtRobotSpds(lid.getDistances((uint32_t)ang), angLimit);
+
+				if (abs(angLimit)>90){
+					spd.lin = 0.0f;
+				}
+				telega.setRobotSpeed(-spd.lin,-spd.ang);
 				break;
 			case ACTIONS::DELAY:
 				static uint32_t delayBegin = 0;

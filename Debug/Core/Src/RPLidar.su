@@ -10,6 +10,7 @@
 ../Core/Src/RPLidar.cpp:259:10:uint32_t RPLidar::stop()	24	static
 ../Core/Src/RPLidar.cpp:266:10:uint32_t RPLidar::startScan(bool, uint32_t)	40	static
 ../Core/Src/RPLidar.cpp:294:8:float* RPLidar::getDistances()	16	static
-../Core/Src/RPLidar.cpp:298:7:float RPLidar::getDistances(int)	16	static
-../Core/Src/RPLidar.cpp:301:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	24	static
-../Core/Src/RPLidar.cpp:307:10:uint32_t RPLidar::waitPoint(uint32_t)	56	static
+../Core/Src/RPLidar.cpp:298:6:void RPLidar::setDistances(uint32_t, float)	24	static
+../Core/Src/RPLidar.cpp:302:7:float RPLidar::getDistances(int)	16	static
+../Core/Src/RPLidar.cpp:305:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	24	static
+../Core/Src/RPLidar.cpp:311:10:uint32_t RPLidar::waitPoint(uint32_t)	56	static

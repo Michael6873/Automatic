@@ -26,7 +26,7 @@ bool RPLidar::isOpen() {
 RPLidar::RPLidar() {
 
     for (int i = 0; i < sizeof(distances) / sizeof(distances[0]); ++i) {
-        distances[i] = 10000;
+        distances[i] = 0.0f;
     }
     _currentMeasurement.distance = 0;
     _currentMeasurement.angle = 0;
@@ -45,18 +45,18 @@ RPLidar::~RPLidar()
 bool RPLidar::begin() {
     // Если UART уже открыт, завершаем его работу
     if (isOpen()) {
-        end();
+ //       end();
     }
 
     // Настройка UART1 для работы с RPLIDAR
-    huart2.Instance = USART2;
-    huart2.Init.BaudRate = 115200;
-    huart2.Init.WordLength = UART_WORDLENGTH_8B;
-    huart2.Init.StopBits = UART_STOPBITS_1;
-    huart2.Init.Parity = UART_PARITY_NONE;
-    huart2.Init.Mode = UART_MODE_TX_RX;
-    huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+   // huart2.Instance = USART2;
+   // huart2.Init.BaudRate = 115200;
+   // huart2.Init.WordLength = UART_WORDLENGTH_8B;
+   // huart2.Init.StopBits = UART_STOPBITS_1;
+   // huart2.Init.Parity = UART_PARITY_NONE;
+   // huart2.Init.Mode = UART_MODE_TX_RX;
+   // huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+   // huart2.Init.OverSampling = UART_OVERSAMPLING_16;
 
     // Инициализация UART1
     if (HAL_UART_Init(&huart2) != HAL_OK) {
@@ -295,6 +295,10 @@ float* RPLidar::getDistances() {  // Аргумент по умолчанию з
     return distances;
 }
 
+void RPLidar::setDistances(uint32_t i, float value){
+	distances[i] = value;
+}
+
 float RPLidar::getDistances(int i) {  // Аргумент по умолчанию здесь не указывается
     return distances[i];
 }
@@ -353,7 +357,7 @@ uint32_t RPLidar::waitPoint(uint32_t timeout) {
             float newAngle = _currentMeasurement.angle;
             float newDistance = _currentMeasurement.distance;
 
-            if (newDistance>150){
+            if (newDistance>200){
 				if (newAngle>=0&&newAngle<=360)
 					if (newDistance != distances[(int)newAngle]) {
 						distances[(int)newAngle] = newDistance; // Сохраняем  расстояние
