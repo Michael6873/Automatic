@@ -1,17 +1,18 @@
 ../Core/Src/RPLidar.cpp:14:6:void RPLidar::end()	16	static
 ../Core/Src/RPLidar.cpp:22:6:bool RPLidar::isOpen()	16	static
 ../Core/Src/RPLidar.cpp:26:1:RPLidar::RPLidar()	16	static
-../Core/Src/RPLidar.cpp:36:1:RPLidar::~RPLidar()	16	static
-../Core/Src/RPLidar.cpp:43:6:bool RPLidar::begin()	16	static
-../Core/Src/RPLidar.cpp:69:10:uint32_t RPLidar::_sendCommand(uint8_t, const void*, size_t)	40	static
-../Core/Src/RPLidar.cpp:125:10:uint32_t RPLidar::_waitResponseHeader(rplidar_ans_header_t*, uint32_t)	40	static
-../Core/Src/RPLidar.cpp:165:10:uint32_t RPLidar::getHealth(rplidar_response_device_health_t&, uint32_t)	56	static
-../Core/Src/RPLidar.cpp:208:10:uint32_t RPLidar::getDeviceInfo(rplidar_response_device_info_t&, uint32_t)	56	static
-../Core/Src/RPLidar.cpp:257:10:uint32_t RPLidar::stop()	24	static
-../Core/Src/RPLidar.cpp:264:10:uint32_t RPLidar::startScan(bool, uint32_t)	40	static
-../Core/Src/RPLidar.cpp:292:8:float* RPLidar::getDistances()	16	static
-../Core/Src/RPLidar.cpp:296:6:void RPLidar::setDistances(uint32_t, float)	24	static
-../Core/Src/RPLidar.cpp:300:6:void RPLidar::clearDistances()	24	static
-../Core/Src/RPLidar.cpp:307:7:float RPLidar::getDistances(int)	16	static
-../Core/Src/RPLidar.cpp:310:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	24	static
-../Core/Src/RPLidar.cpp:316:10:uint32_t RPLidar::waitPoint(uint32_t)	56	static
+../Core/Src/RPLidar.cpp:37:1:RPLidar::~RPLidar()	16	static
+../Core/Src/RPLidar.cpp:44:6:bool RPLidar::begin()	16	static
+../Core/Src/RPLidar.cpp:70:10:uint32_t RPLidar::_sendCommand(uint8_t, const void*, size_t)	40	static
+../Core/Src/RPLidar.cpp:126:10:uint32_t RPLidar::_waitResponseHeader(rplidar_ans_header_t*, uint32_t)	40	static
+../Core/Src/RPLidar.cpp:166:10:uint32_t RPLidar::getHealth(rplidar_response_device_health_t&, uint32_t)	56	static
+../Core/Src/RPLidar.cpp:209:10:uint32_t RPLidar::getDeviceInfo(rplidar_response_device_info_t&, uint32_t)	56	static
+../Core/Src/RPLidar.cpp:258:10:uint32_t RPLidar::stop()	24	static
+../Core/Src/RPLidar.cpp:265:10:uint32_t RPLidar::startScan(bool, uint32_t)	40	static
+../Core/Src/RPLidar.cpp:293:8:float* RPLidar::getDist()	16	static
+../Core/Src/RPLidar.cpp:297:6:void RPLidar::setDist(uint32_t, float)	24	static
+../Core/Src/RPLidar.cpp:301:6:void RPLidar::clearArray(float*)	24	static
+../Core/Src/RPLidar.cpp:308:7:float RPLidar::getDist(int)	16	static
+../Core/Src/RPLidar.cpp:311:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	24	static
+../Core/Src/RPLidar.cpp:318:6:void RPLidar::reWriteDist()	40	static
+../Core/Src/RPLidar.cpp:365:10:uint32_t RPLidar::waitPoint(uint32_t)	56	static

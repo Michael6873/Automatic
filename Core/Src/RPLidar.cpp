@@ -25,7 +25,8 @@ bool RPLidar::isOpen() {
 
 RPLidar::RPLidar() {
 
-	clearDistances();
+	clearArray(distances);
+	clearArray(minDist);
     _currentMeasurement.distance = 0;
     _currentMeasurement.angle = 0;
     _currentMeasurement.quality = 0;
@@ -289,23 +290,23 @@ uint32_t RPLidar::startScan(bool force, uint32_t timeout) {
 
     return RESULT_OK;
 }
-float* RPLidar::getDistances() {  // Аргумент по умолчанию здесь не указывается
-    return distances;
+float* RPLidar::getDist() {  // Аргумент по умолчанию здесь не указывается
+    return minDist;
 }
 
-void RPLidar::setDistances(uint32_t i, float value){
-	distances[i] = value;
+void RPLidar::setDist(uint32_t i, float value){
+	minDist[i] = value;
 }
 
-void RPLidar::clearDistances(){
-    for (int i = 0; i < sizeof(distances) / sizeof(distances[0]); ++i) {
-        distances[i] = 0.0f;
+void RPLidar::clearArray( float array[361]){
+    for (int i = 0; i < sizeof(array) / sizeof(array[0]); ++i) {
+    	array[i] = 0.0f;
     }
 }
 
 
-float RPLidar::getDistances(int i) {  // Аргумент по умолчанию здесь не указывается
-    return distances[i];
+float RPLidar::getDist(int i) {  // Аргумент по умолчанию здесь не указывается
+    return minDist[i];
 }
 float RPLidar::constrain(int32_t value,int32_t num1,int32_t num2){
 	if (value>num2) value = num2;
@@ -313,6 +314,54 @@ float RPLidar::constrain(int32_t value,int32_t num1,int32_t num2){
 	return value;
 }
 
+
+void RPLidar::reWriteDist(){
+	for (int angle = 0; angle <= 350; angle += 7) {
+	        float minDistance = distances[angle]; // Инициализируем минимальное расстояние текущим значением
+
+	        // Определяем диапазон для поиска минимального расстояния
+	        int startAngle = angle - 3;
+	        int endAngle = angle + 3;
+
+	        // Обрабатываем специальный случай для угла 0
+	        if (angle == 0) {
+	            startAngle = 357; // Начинаем с 357
+	            endAngle = 3;     // Заканчиваем на 3
+	        }
+	        // Обрабатываем специальный случай для угла 350
+	        else if (angle == 350) {
+	            startAngle = 347; // Начинаем с 347
+	            endAngle = 356;   // Заканчиваем на 356
+	        }
+
+	        // Проверяем значения в диапазоне
+	        for (int currentAngle = startAngle; currentAngle <= endAngle; ++currentAngle) {
+	            // Обрабатываем циклический характер углов
+	            int wrappedAngle = currentAngle;
+	            if (wrappedAngle < 0) {
+	                wrappedAngle += 360; // Если угол отрицательный, добавляем 360
+	            }
+	            else if (wrappedAngle > 360) {
+	                wrappedAngle -= 360; // Если угол больше 360, вычитаем 360
+	            }
+
+	            // Исключаем угол 357 для угла 0
+	            if (angle == 0 && wrappedAngle == 357) {
+	                continue; // Пропускаем угол 357
+	            }
+
+	            // Проверяем, чтобы угол не выходил за пределы массива
+	            if (wrappedAngle >= 0 && wrappedAngle <= 360) {
+	                if (distances[wrappedAngle] < minDistance) {
+	                    minDistance = distances[wrappedAngle];
+	                }
+	            }
+	        }
+
+	        // Записываем минимальное расстояние в новый массив
+	        minDist[angle] = minDistance;
+	    }
+}
 uint32_t RPLidar::waitPoint(uint32_t timeout) {
     uint32_t currentTs = HAL_GetTick(); // Получаем текущее время
     uint32_t remainingtime;
@@ -362,14 +411,12 @@ uint32_t RPLidar::waitPoint(uint32_t timeout) {
             float newAngle = _currentMeasurement.angle;
             float newDistance = _currentMeasurement.distance;
 
-            if (newDistance>200){
 				if (newAngle>=0&&newAngle<=360)
 					if (newDistance != distances[(int)newAngle]) {
 						distances[(int)newAngle] = newDistance; // Сохраняем  расстояние
 				}
-            }
 
-
+            reWriteDist();
             return RESULT_OK; // Успешное завершение
         }
     }

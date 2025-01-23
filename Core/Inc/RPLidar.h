@@ -90,14 +90,14 @@ public:
     // wait for one sample point to arrive
     uint32_t waitPoint(uint32_t timeout = RPLIDAR_DEFAULT_TIMEOUT);
 
-    float getDistances(int i);
+    float getDist(int i);
     // retrieve currently received sample point
 
-    float* getDistances();
+    float* getDist();
 
-    void clearDistances();
+    void clearArray( float array[361]);
 
-    void setDistances(uint32_t i, float value);
+    void setDist(uint32_t i, float value);
 
     const RPLidarMeasurement & getCurrentPoint()
     {
@@ -105,6 +105,7 @@ public:
     }
 
 protected:
+    void reWriteDist();
     uint32_t _sendCommand(uint8_t cmd, const void * payload, size_t payloadsize);
     uint32_t _waitResponseHeader(rplidar_ans_header_t * header, uint32_t timeout);
     float constrain(int32_t value,int32_t num1,int32_t num2);
@@ -112,6 +113,7 @@ protected:
 protected:
     RPLidarMeasurement _currentMeasurement;
     float distances[361]; // Массив расстояний для каждого угла
+    float minDist[361]; // Массив расстояний для каждого угла
 };
 
 

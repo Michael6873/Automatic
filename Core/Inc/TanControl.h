@@ -27,19 +27,19 @@ public:
 	    return spd;
 	}
 
-	float getErrorAngle(float *distances){
+	int32_t getErrorAngle(float *distances){
 		float errorAngle = 0.0f;
 		float minDistance = 10000.0f;
-		  for(int i = 0;i<=360;i++){
+		for (int32_t i = 0; i <= 350; i += 7) {
 
-			  if(distances[i]<minDistance&&distances[i]!=0){
+			  if(distances[i]<minDistance&&distances[i]!=0&&distances[i]>150&&distances[i]<500){
 				  minDistance = distances[i];
 				  errorAngle = i;
 			  }
 		  }
 		  return errorAngle;
 	}
-	float limitAng(float ang){
+	int32_t limitAng(int32_t ang){
 		int32_t inAng = ang;
 		while (inAng >= HALF_CIRCLE) {
 			inAng -= 2 * HALF_CIRCLE;

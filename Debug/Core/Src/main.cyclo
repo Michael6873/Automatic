@@ -30,8 +30,8 @@ Telega.h:16:7:void Telega::handler()	1
 Telega.h:20:7:void Telega::setRobotSpeed(float, float)	1
 Telega.h:43:7:void Telega::setMotorSpeed(float, float)	1
 TanControl.h:12:6:Spd TanControl::calcTgtRobotSpds(float, float)	3
-TanControl.h:30:8:float TanControl::getErrorAngle(float*)	4
-TanControl.h:42:8:float TanControl::limitAng(float)	3
+TanControl.h:30:10:int32_t TanControl::getErrorAngle(float*)	6
+TanControl.h:42:10:int32_t TanControl::limitAng(int32_t)	3
 TanControl.h:53:7:void TanControl::clearSpd()	1
 stl_queue.h:96:11:std::queue<ActionsQueue::RobotInstruction>::~queue()	1
 Telega.h:7:7:Telega::~Telega()	1
@@ -41,7 +41,7 @@ ActionsQueue.h:34:7:void ActionsQueue::push(ACTIONS)	1
 ActionsQueue.h:51:7:bool ActionsQueue::isClear()	3
 ActionsQueue.h:63:7:void ActionsQueue::handler()	1
 ActionsQueue.h:67:7:void ActionsQueue::fastCycle()	16
-ActionsQueue.h:145:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS)	1
+ActionsQueue.h:146:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS)	1
 main.cpp:93:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	2
 main.cpp:102:6:void init()	1
 main.cpp:129:5:int main()	2
