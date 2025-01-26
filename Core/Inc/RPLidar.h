@@ -88,7 +88,9 @@ public:
     uint32_t startScan(bool force = false, uint32_t timeout = RPLIDAR_DEFAULT_TIMEOUT*2);
 
     // wait for one sample point to arrive
-    uint32_t waitPoint(uint32_t timeout = RPLIDAR_DEFAULT_TIMEOUT);
+    uint32_t waitPoint(uint32_t timeout = 1);
+
+    void onReceive(uint8_t byte);
 
     float getDist(int i);
     // retrieve currently received sample point

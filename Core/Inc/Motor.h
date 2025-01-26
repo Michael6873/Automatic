@@ -15,13 +15,25 @@
 		return value;
 	}
 
+	float constrainf(float value,float num1,float num2){
+		if (value>num2) value = num2;
+		if (value<num1) value = num1;
+		return value;
+	}
+
 class Motor{
 
 public:
 
 	Motor(TIM_HandleTypeDef* _encTim,TIM_HandleTypeDef* _ctrlTim, uint8_t _ctrlTimCh):
 		ctrlTim(_ctrlTim),ctrlTimCh(_ctrlTimCh),enc(_encTim),pid(20,0.05,7)
-	{};
+	{
+		__HAL_TIM_SET_COMPARE(ctrlTim, TIM_CHANNEL_1, ZERO);
+		__HAL_TIM_SET_COMPARE(ctrlTim, TIM_CHANNEL_2, ZERO);
+		__HAL_TIM_SET_COMPARE(ctrlTim, TIM_CHANNEL_3, ZERO);
+		__HAL_TIM_SET_COMPARE(ctrlTim, TIM_CHANNEL_4, ZERO);
+
+	};
 
 
 	float getTargetSpeed(){
@@ -36,7 +48,7 @@ public:
 	}
 	void setTargetSpeed(float speed){
 		targetSpeed = speed;
-		targetSpeed = constrain(targetSpeed,-MAX_MOT_SPEED,MAX_MOT_SPEED);
+		targetSpeed = constrainf(targetSpeed,-MAX_MOT_SPEED,MAX_MOT_SPEED);
 	}
 	void handler(){
 		calcCurSpeedMotor();

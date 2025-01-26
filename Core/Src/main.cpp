@@ -25,7 +25,7 @@
 #include <cstring>
 #include  <cmath>
 //#include <Telega.h>
-#include  <ActionsQueue.h>
+#include  <AutoPilot.h>
 
 /* USER CODE END Includes */
 
@@ -35,6 +35,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+uint8_t uart_rx_buffer[RX_BUFFER_SIZE];
+
 double errorAngle;
 double currentAngle = 0;
 float minDistance = 1000;
@@ -45,9 +47,6 @@ bool  startBit;
 uint8_t  quality;
 int16_t encL = 0;
 int16_t encR = 0;
-
-ActionsQueue Queue;
-//Telega telega;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -90,15 +89,19 @@ static void MX_TIM1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+AutoPilot pilot;
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM1) // Проверяем, что прерывание от TIM3
     {
         // Действия при срабатывании прерывания
-    	Queue.handler();
-    	//telega.handler();
+    	 pilot.handler();
+
     }
 }
+
 void init(){
 	  //питание для левого энкодера
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
@@ -160,19 +163,12 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_Delay(100);
   init();
-  Queue.init();
+
+  pilot.init();
+  //RPLidar lid;
+  //lid.begin();
+  //lid.startScan();
   HAL_Delay(100);
-
-  //telega.setRobotSpeed(160.0, 0.0);
-/*
-  // правый двигатель едет вперед ( пр. часовой)
-  TIM3->CCR2 = 5000;
-  TIM3->CCR1 = 0;
-
-  //левый двигатель едет вперед (пр. часовой)
-  TIM3->CCR4 = 5000;
-  TIM3->CCR3 = 0;
-  */
 
   /* USER CODE END 2 */
 
@@ -180,15 +176,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//
-
-
-	  if(Queue.isClear()){
-		  Queue.push(SET_SPEED_TURN); // Движение вперёд
-
-	  }
-
-      Queue.fastCycle();
+	 // if(IS_OK(lid.waitPoint())) ;
+	pilot.fastCycle();
 
     /* USER CODE END WHILE */
 

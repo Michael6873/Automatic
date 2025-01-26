@@ -1,18 +1,19 @@
-RPLidar.cpp:14:6:void RPLidar::end()	2
-RPLidar.cpp:22:6:bool RPLidar::isOpen()	1
-RPLidar.cpp:26:1:RPLidar::RPLidar()	1
-RPLidar.cpp:37:1:RPLidar::~RPLidar()	1
-RPLidar.cpp:44:6:bool RPLidar::begin()	2
-RPLidar.cpp:70:10:uint32_t RPLidar::_sendCommand(uint8_t, const void*, size_t)	9
-RPLidar.cpp:126:10:uint32_t RPLidar::_waitResponseHeader(rplidar_ans_header_t*, uint32_t)	9
-RPLidar.cpp:166:10:uint32_t RPLidar::getHealth(rplidar_response_device_health_t&, uint32_t)	10
-RPLidar.cpp:209:10:uint32_t RPLidar::getDeviceInfo(rplidar_response_device_info_t&, uint32_t)	9
-RPLidar.cpp:258:10:uint32_t RPLidar::stop()	2
-RPLidar.cpp:265:10:uint32_t RPLidar::startScan(bool, uint32_t)	7
-RPLidar.cpp:293:8:float* RPLidar::getDist()	1
-RPLidar.cpp:297:6:void RPLidar::setDist(uint32_t, float)	1
-RPLidar.cpp:301:6:void RPLidar::clearArray(float*)	2
-RPLidar.cpp:308:7:float RPLidar::getDist(int)	1
-RPLidar.cpp:311:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	3
-RPLidar.cpp:318:6:void RPLidar::reWriteDist()	12
-RPLidar.cpp:365:10:uint32_t RPLidar::waitPoint(uint32_t)	11
+RPLidar.cpp:16:6:void RPLidar::end()	2
+RPLidar.cpp:24:6:bool RPLidar::isOpen()	1
+RPLidar.cpp:28:1:RPLidar::RPLidar()	1
+RPLidar.cpp:39:1:RPLidar::~RPLidar()	1
+RPLidar.cpp:46:6:bool RPLidar::begin()	2
+RPLidar.cpp:72:10:uint32_t RPLidar::_sendCommand(uint8_t, const void*, size_t)	9
+RPLidar.cpp:128:10:uint32_t RPLidar::_waitResponseHeader(rplidar_ans_header_t*, uint32_t)	9
+RPLidar.cpp:168:10:uint32_t RPLidar::getHealth(rplidar_response_device_health_t&, uint32_t)	10
+RPLidar.cpp:211:10:uint32_t RPLidar::getDeviceInfo(rplidar_response_device_info_t&, uint32_t)	9
+RPLidar.cpp:260:10:uint32_t RPLidar::stop()	2
+RPLidar.cpp:267:10:uint32_t RPLidar::startScan(bool, uint32_t)	7
+RPLidar.cpp:295:8:float* RPLidar::getDist()	1
+RPLidar.cpp:299:6:void RPLidar::setDist(uint32_t, float)	1
+RPLidar.cpp:303:6:void RPLidar::clearArray(float*)	2
+RPLidar.cpp:310:7:float RPLidar::getDist(int)	1
+RPLidar.cpp:313:7:float RPLidar::constrain(int32_t, int32_t, int32_t)	3
+RPLidar.cpp:320:6:void RPLidar::reWriteDist()	9
+RPLidar.cpp:354:10:uint32_t RPLidar::waitPoint(uint32_t)	12
+RPLidar.cpp:420:6:void RPLidar::onReceive(uint8_t)	8

@@ -24,7 +24,7 @@ class ActionsQueue
 {
 public:
 	
-	ActionsQueue():pidl(10,0.0005,1){
+	ActionsQueue(){
 	};
 	void init(){
 		lid.begin();
@@ -64,11 +64,25 @@ public:
 		telega.handler();
 	}
 
+	void onReceive(uint8_t byte){
+		lid.onReceive(byte);
+	}
+
+	int32_t checkEnemy(){
+		ang  = tan.getErrorAngle(lid.getDist());
+		int32_t angLimit = 0;
+		if (ang) angLimit = tan.limitAng(ang);
+		else angLimit = 0;
+		return angLimit;
+	}
+
+	bool getEnemy(){
+		return tan.getEnemy(lid.getDist());
+	}
 	void fastCycle() {
 
-		int32_t ang,angLimit;
-		float Spd;
-		static uint32_t count = 0;
+		if(IS_OK(lid.waitPoint())) ;
+		int32_t angLimit = 0;
 		if (rQueue.empty()) {
 			rQueue.push(RobotInstruction(IDLE));
 		}
@@ -78,7 +92,6 @@ public:
 		else
 		{
 			RobotInstruction _curInstr = rQueue.front();
-			if(IS_OK(lid.waitPoint())) ;
 
 			switch (_curInstr.robotAction)
 			{
@@ -109,13 +122,10 @@ public:
 				rQueue.pop();
 				break;
 			case ACTIONS::SET_SPEED_TURN:
-			    ang = tan.getErrorAngle(lid.getDist()); // Угол с минимальным расстоянием
-			    if (ang) {
-			        angLimit = tan.limitAng(ang); // Ограничение угла [-180, 180]
-			        float mindist = lid.getDist((uint32_t)ang); // Минимальное расстояние
-			        spd = tan.calcTgtRobotSpds(mindist, (float)angLimit);
+			        angLimit = checkEnemy(); // Ограничение угла [-180, 180]
+				    spd.lin = 0.0f;
+				    spd.ang = TURN_SPEED*angLimit/fabs((float)angLimit); // Только угловое движение
 			        telega.setRobotSpeed(spd.lin, -spd.ang); // Угловая скорость инвертирована
-			    }
 				break;
 			case ACTIONS::DELAY:
 				static uint32_t delayBegin = 0;
@@ -157,13 +167,13 @@ private:
 		}
 	};
 	std::queue<RobotInstruction> rQueue;
-	PID pidl;
 	RPLidar lid;
 	Telega telega;
 	TanControl tan;
 	Spd spd;
 
 	bool delayInit = false;
+	int32_t ang = 0;
 };
 #endif // !_ACTIONS_QUEUE_H_
 

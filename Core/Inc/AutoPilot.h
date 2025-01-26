@@ -18,10 +18,8 @@
 
 class AutoPilot {
 public:
-	AutoPilot(Navigation& _nav, PiConnect& _rpi, PathTracker& _path)
-		: nav(_nav), rpi(_rpi), path(_path), aQueue(_path)
+	AutoPilot()
 	{
-		line.init();
 	};
 
 	enum STATES :uint8_t
@@ -37,79 +35,6 @@ public:
 
 	void handler() {
 		line.handler();
-		if (curState != IDLE) {
-			if (line.isCrossed()) {
-				curState = AVOID_LINE;
-			}
-		}
-
-		switch (curState)
-		{
-
-		case AutoPilot::SEARCH:
-			if (lastState != SEARCH) {
-				lastState = SEARCH;
-			}
-				aQueue.push(GO_FORWARD);
-
-
-			if (rpi.getEnemyCnt() > 0) {
-				curState = ATACK;
-			}
-			break;
-
-		case AutoPilot::ATACK:
-			if (lastState != ATACK) {
-				lastState = ATACK;
-			}
-
-			if (rpi.getEnemyPose().norm() < 200) {
-				curState = FIN_ATACK;
-			}
-			else if (rpi.getEnemyCnt() > 0) {
-				aQueue.clear();
-				aQueue.push(SET_POINT, rpi.getEnemyPose());
-			}
-			else {
-				curState = SEARCH;
-			}
-
-			break;
-		case AutoPilot::FIN_ATACK:
-			if (lastState != FIN_ATACK) {
-				lastState = FIN_ATACK;
-				aQueue.clear();
-				aQueue.push(GO_FORWARD_MAX);
-				aQueue.push(DELAY, 3000);
-			}
-
-			break;
-		case AutoPilot::ENEMY_LOST:
-			if (lastState != ENEMY_LOST) {
-				lastState = ENEMY_LOST;
-				aQueue.clear();
-			}
-
-			if (aQueue.isClear()) {
-				curState = SEARCH;
-			}
-			break;
-		case AutoPilot::AVOID_LINE:
-			if (lastState != AVOID_LINE) {
-				lastState = AVOID_LINE;
-				aQueue.clear();
-				aQueue.push(ACTIONS::GO_BACKWARD);
-				aQueue.push(DELAY, 400);
-				aQueue.push(ACTIONS::TURN_LEFT);
-				aQueue.push(DELAY, 500);
-				aQueue.push(ACTIONS::GO_FORWARD);
-			}
-			if (aQueue.isClear()) {
-				curState = SEARCH;
-			}
-			break;
-		}
-
 		aQueue.handler();
 	}
 
@@ -118,13 +43,94 @@ public:
 		curState = AutoPilot::SEARCH;
 	}
 
+	void fastCycle(){
+		//		if (curState != IDLE) {
+		//			if (line.isCrossed()) {
+		//				curState = AVOID_LINE;
+		//			}
+		//		}
+
+				ang = aQueue.checkEnemy();
+				switch (curState)
+				{
+
+				case AutoPilot::SEARCH:
+					if (lastState != SEARCH) {
+						lastState = SEARCH;
+						aQueue.clear();
+					}
+
+					if (aQueue.isClear()) {
+						aQueue.push(GO_FORWARD);
+						aQueue.push(DELAY,500);
+						aQueue.push(STOP);
+						aQueue.push(DELAY,3000);
+					}
+
+					if (aQueue.getEnemy()) {
+						curState = ATACK;
+					}
+					break;
+
+				case AutoPilot::ATACK:
+					if (lastState != ATACK) {
+						lastState = ATACK;
+						aQueue.clear();
+					}
+					if(abs(ang)>30){
+						aQueue.clear();
+						aQueue.push(ACTIONS::SET_SPEED_TURN);
+					}
+					else if (abs(ang)<30){
+						//curState = FIN_ATACK;
+					}
+					if (!aQueue.getEnemy()) {
+						curState = SEARCH;
+					}
+
+					break;
+				case AutoPilot::FIN_ATACK:
+					if (lastState != FIN_ATACK) {
+						lastState = FIN_ATACK;
+						aQueue.clear();
+					}
+						aQueue.push(GO_FORWARD_MAX);
+
+						if (abs(ang)>30||!aQueue.getEnemy()){
+							curState = SEARCH;
+						}
+
+					break;
+				case AutoPilot::AVOID_LINE:
+					if (lastState != AVOID_LINE) {
+						lastState = AVOID_LINE;
+						aQueue.clear();
+					}
+						aQueue.push(ACTIONS::GO_BACKWARD);
+						aQueue.push(DELAY, 1000);
+						aQueue.push(ACTIONS::TURN_LEFT);
+						aQueue.push(DELAY, 500);
+						aQueue.push(ACTIONS::GO_FORWARD);
+					if (aQueue.isClear()) {
+						curState = SEARCH;
+					}
+					break;
+				}
+
+		aQueue.fastCycle();
+	}
+
+	void init(){
+		aQueue.init();
+		HAL_Delay(100);
+		line.init();
+	}
+
 
 private:
 	ActionsQueue aQueue;
-	Navigation& nav;
 	LineDetector line;
-	PiConnect& rpi;
-	PathTracker& path;
+	int32_t ang = 0;
 
 	STATES lastState = SEARCH, curState = SEARCH;
 };

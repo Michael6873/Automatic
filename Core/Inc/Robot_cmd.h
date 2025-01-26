@@ -15,14 +15,19 @@ extern TIM_HandleTypeDef htim4;
 #define MIN_MOT_PWM 500
 
 #define MAX_MOT_SPEED 100
-#define TURN_SPEED 100
+#define TURN_SPEED 50
 
-#define K_ANG 0.5
+#define K_ANG 0.6
 #define HALF_CIRCLE 180
+
+#define MIN_RANGE_LID 200
+#define MAX_RANGE_LID 500
 
 #define ZERO 0
 
 #define MOT_PER_SIDE 2
+
+#define RX_BUFFER_SIZE 1
 
 #define ENC_SET_VALUE 20000
 

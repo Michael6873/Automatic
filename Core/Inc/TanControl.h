@@ -28,16 +28,25 @@ public:
 	}
 
 	int32_t getErrorAngle(float *distances){
-		float errorAngle = 0.0f;
-		float minDistance = 10000.0f;
-		for (int32_t i = 0; i <= 350; i += 7) {
+		int32_t errorAngle = 0;
+		float minDistance = 20000.0f;
+		for (int32_t i = 0; i < 360; i += 9) {
 
-			  if(distances[i]<minDistance&&distances[i]!=0&&distances[i]>150&&distances[i]<500){
+			  if(distances[i]<minDistance&&distances[i]!=0){
 				  minDistance = distances[i];
 				  errorAngle = i;
 			  }
 		  }
-		  return errorAngle;
+		  return (int32_t)errorAngle;
+	}
+
+	bool getEnemy(float *distances){
+		flagEnemy = false;
+		for (int32_t i = 0; i < 360; i ++) {
+			if(distances[i]>MIN_RANGE_LID&&distances[i]<MAX_RANGE_LID) flagEnemy = true;
+		}
+
+		return flagEnemy;
 	}
 	int32_t limitAng(int32_t ang){
 		int32_t inAng = ang;
@@ -54,6 +63,6 @@ private:
 		spd.lin = 0;
 		spd.ang = 0;
 	}
-
+	bool flagEnemy = false;
 	Spd spd;
 };

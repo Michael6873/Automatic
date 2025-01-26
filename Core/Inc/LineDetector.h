@@ -18,7 +18,7 @@ public:
 		sens.init();
 	}
 	void handler() {
-		if (HAL-GetTick() - lastMs > delayMs) {
+		if (HAL_GetTick() - lastMs > delayMs) {
 				if ((sens.getColorWhite() < whiteTh) && (sens.getColorRed() < redTh) && (sens.getColorGreen() < greenTh) && (sens.getColorBlue() < blueTh)) {
 					lineIsCrosed = true;
 				}
@@ -36,7 +36,6 @@ private:
 	uint32_t delayMs = 5;
 	bool lineIsCrosed = false;
 	static const uint16_t whiteTh = 0x250, redTh = 200, greenTh = 200, blueTh = 200;
-	TCS3472 collor;
 	ColorSens sens;
 	uint32_t lastMs = HAL_GetTick();
 };

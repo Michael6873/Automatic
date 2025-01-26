@@ -6,8 +6,10 @@
  */
 #include "RPLidar.h"
 #include <limits>
+#include <Robot_cmd.h>
 
 extern UART_HandleTypeDef huart2; // Дескриптор UART1
+extern uint8_t uart_rx_buffer[RX_BUFFER_SIZE];
 static bool uart1_is_open = false;
 
 // Закрытие UART1
@@ -316,52 +318,39 @@ float RPLidar::constrain(int32_t value,int32_t num1,int32_t num2){
 
 
 void RPLidar::reWriteDist(){
-	for (int angle = 0; angle <= 350; angle += 7) {
-	        float minDistance = distances[angle]; // Инициализируем минимальное расстояние текущим значением
+    for (int angle = 0; angle < 360; angle += 9) { // Шаг изменения угла 9 градусов
+        float minDistance = 20000.0f; // Инициализируем минимальное расстояние текущим значением
 
-	        // Определяем диапазон для поиска минимального расстояния
-	        int startAngle = angle - 3;
-	        int endAngle = angle + 3;
+        // Определяем диапазон для поиска минимального расстояния
+        int startAngle = angle - 4;
+        int endAngle = angle + 4;
 
-	        // Обрабатываем специальный случай для угла 0
-	        if (angle == 0) {
-	            startAngle = 357; // Начинаем с 357
-	            endAngle = 3;     // Заканчиваем на 3
-	        }
-	        // Обрабатываем специальный случай для угла 350
-	        else if (angle == 350) {
-	            startAngle = 347; // Начинаем с 347
-	            endAngle = 356;   // Заканчиваем на 356
-	        }
+        // Проверяем значения в диапазоне
+        for (int currentAngle = startAngle; currentAngle <= endAngle; ++currentAngle) {
+            // Обрабатываем циклический характер углов
+            int wrappedAngle = currentAngle;
+            if (wrappedAngle < 0) {
+                wrappedAngle += 360; // Если угол отрицательный, добавляем 360
+            }
+            else if (wrappedAngle > 360) {
+                wrappedAngle -= 360; // Если угол больше 360, вычитаем 360
+            }
 
-	        // Проверяем значения в диапазоне
-	        for (int currentAngle = startAngle; currentAngle <= endAngle; ++currentAngle) {
-	            // Обрабатываем циклический характер углов
-	            int wrappedAngle = currentAngle;
-	            if (wrappedAngle < 0) {
-	                wrappedAngle += 360; // Если угол отрицательный, добавляем 360
-	            }
-	            else if (wrappedAngle > 360) {
-	                wrappedAngle -= 360; // Если угол больше 360, вычитаем 360
-	            }
+            // Проверяем, чтобы угол не выходил за пределы массива
+            if (wrappedAngle >= 0 && wrappedAngle < 360) {
+                if (distances[wrappedAngle] < minDistance) {
+                    minDistance = distances[wrappedAngle];
+                }
+            }
+        }
 
-	            // Исключаем угол 357 для угла 0
-	            if (angle == 0 && wrappedAngle == 357) {
-	                continue; // Пропускаем угол 357
-	            }
-
-	            // Проверяем, чтобы угол не выходил за пределы массива
-	            if (wrappedAngle >= 0 && wrappedAngle <= 360) {
-	                if (distances[wrappedAngle] < minDistance) {
-	                    minDistance = distances[wrappedAngle];
-	                }
-	            }
-	        }
-
-	        // Записываем минимальное расстояние в новый массив
-	        minDist[angle] = minDistance;
-	    }
+        // Записываем минимальное расстояние в новый массив
+        if (minDistance != 20000.0f) {
+            minDist[angle] = minDistance;
+        }
+    }
 }
+
 uint32_t RPLidar::waitPoint(uint32_t timeout) {
     uint32_t currentTs = HAL_GetTick(); // Получаем текущее время
     uint32_t remainingtime;
@@ -411,9 +400,10 @@ uint32_t RPLidar::waitPoint(uint32_t timeout) {
             float newAngle = _currentMeasurement.angle;
             float newDistance = _currentMeasurement.distance;
 
-				if (newAngle>=0&&newAngle<=360)
-					if (newDistance != distances[(int)newAngle]) {
+				if (newAngle>=0&&newAngle<=360){
+					if (newDistance>MIN_RANGE_LID&&newDistance<MAX_RANGE_LID)
 						distances[(int)newAngle] = newDistance; // Сохраняем  расстояние
+					else distances[(int)newAngle] = 15000.0f;
 				}
 
             reWriteDist();
@@ -425,3 +415,68 @@ uint32_t RPLidar::waitPoint(uint32_t timeout) {
     return RESULT_OPERATION_TIMEOUT;
 }
 
+
+
+void RPLidar::onReceive(uint8_t byte) {
+    static uint8_t recvPos = 0;
+    rplidar_response_measurement_node_t node;
+    uint8_t *nodebuf = (uint8_t *)&node;
+
+    switch (recvPos) {
+        case 0: // Ожидаем бит синхронизации и его инверсии
+        {
+            uint8_t tmp = (byte >> 1);
+            if ((tmp ^ byte) & 0x1) {
+                // Прошли проверку, сохраняем байт
+                nodebuf[recvPos++] = byte;
+            } else {
+                // Если проверка не прошла, ждём следующий байт
+                recvPos = 0;
+                return;
+            }
+        }
+        break;
+
+        case 1: // Ожидаем, что самый старший бит равен 1
+        {
+            if (byte & RPLIDAR_RESP_MEASUREMENT_CHECKBIT) {
+                // Прошли проверку, сохраняем байт
+                nodebuf[recvPos++] = byte;
+            } else {
+                // Если проверка не прошла, сбрасываем позицию
+                recvPos = 0;
+                return;
+            }
+        }
+        break;
+
+        default: // Сохраняем последующие байты
+        {
+            nodebuf[recvPos++] = byte;
+        }
+        break;
+    }
+
+    // Если все байты структуры считаны
+    if (recvPos == sizeof(rplidar_response_measurement_node_t)) {
+        // Преобразуем байты в структуру измерений
+        rplidar_response_measurement_node_t *node = (rplidar_response_measurement_node_t *)nodebuf;
+
+        // Вычисляем значения измерений
+        _currentMeasurement.distance = node->distance_q2 / 4.0f;
+        _currentMeasurement.angle = constrain((node->angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f, 0, 360);
+        _currentMeasurement.quality = (node->sync_quality >> RPLIDAR_RESP_MEASUREMENT_QUALITY_SHIFT);
+        _currentMeasurement.startBit = (node->sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT);
+
+        // Сохраняем минимальное расстояние для каждого угла
+        if (_currentMeasurement.angle >= 0 && _currentMeasurement.angle <= 360) {
+            distances[(int)_currentMeasurement.angle] = _currentMeasurement.distance;
+        }
+
+        // Обновляем минимальные расстояния
+        reWriteDist();
+
+        // Сбрасываем позицию для нового пакета
+        recvPos = 0;
+    }
+}
