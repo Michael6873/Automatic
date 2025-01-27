@@ -102,6 +102,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     }
 }
 
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart == &huart2) {
+        // Обработать полученный байт
+        uint8_t received_byte = uart_rx_buffer[0];
+
+        // Вызываем обработку полученного байта из waitPoint
+        pilot.onReceive(received_byte);
+
+        // Перезапускаем прерывание для приёма следующего байта
+        HAL_UART_Receive_IT(&huart2, uart_rx_buffer, 1);
+    }
+}
+
 void init(){
 	  //питание для левого энкодера
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);

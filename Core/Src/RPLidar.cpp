@@ -124,6 +124,61 @@ uint32_t RPLidar::_sendCommand(uint8_t cmd, const void *payload, size_t payloads
     return RESULT_OK; // Если все данные успешно отправлены
 }
 
+uint32_t RPLidar::_sendCommand_IT(uint8_t cmd, const void *payload, size_t payloadsize){
+    rplidar_cmd_packet_t pkt_header;
+    uint8_t checksum = 0;
+    HAL_StatusTypeDef status;
+
+    // Проверяем наличие полезной нагрузки
+    if (payloadsize && payload) {
+        cmd |= RPLIDAR_CMDFLAG_HAS_PAYLOAD;
+    }
+
+    // Формируем заголовок команды
+    pkt_header.syncByte = RPLIDAR_CMD_SYNC_BYTE;
+    pkt_header.cmd_flag = cmd;
+
+    // Отправляем заголовок (2 байта)
+    status = HAL_UART_Transmit_IT(&huart2, (uint8_t *)&pkt_header, sizeof(pkt_header));
+    if (status != HAL_OK) {
+        return RESULT_OPERATION_FAIL; // Если произошла ошибка при передаче, возвращаем ошибку
+    }
+
+    // Если есть полезная нагрузка
+    if (cmd & RPLIDAR_CMDFLAG_HAS_PAYLOAD) {
+        // Инициализируем контрольную сумму
+        checksum ^= RPLIDAR_CMD_SYNC_BYTE;
+        checksum ^= cmd;
+        checksum ^= (payloadsize & 0xFF);
+
+        // Вычисляем контрольную сумму для полезной нагрузки
+        for (size_t pos = 0; pos < payloadsize; ++pos) {
+            checksum ^= ((uint8_t *)payload)[pos];
+        }
+
+        // Отправляем размер полезной нагрузки (1 байт)
+        uint8_t sizebyte = (uint8_t)payloadsize;
+        status = HAL_UART_Transmit_IT(&huart2, &sizebyte, 1);
+        if (status != HAL_OK) {
+            return RESULT_OPERATION_FAIL; // Ошибка при передаче
+        }
+
+        // Отправляем полезную нагрузку
+        status = HAL_UART_Transmit_IT(&huart2, (uint8_t *)payload, payloadsize);
+        if (status != HAL_OK) {
+            return RESULT_OPERATION_FAIL; // Ошибка при передаче
+        }
+
+        // Отправляем контрольную сумму (1 байт)
+        status = HAL_UART_Transmit_IT(&huart2, &checksum, 1);
+        if (status != HAL_OK) {
+            return RESULT_OPERATION_FAIL; // Ошибка при передаче
+        }
+    }
+
+    return RESULT_OK; // Если все данные успешно отправлены
+}
+
 
 uint32_t RPLidar::_waitResponseHeader(rplidar_ans_header_t *header, uint32_t timeout) {
     uint32_t startTick = HAL_GetTick(); // Запоминаем начальное время
@@ -292,6 +347,31 @@ uint32_t RPLidar::startScan(bool force, uint32_t timeout) {
 
     return RESULT_OK;
 }
+
+uint32_t RPLidar::startScan_IT(bool force) {
+    uint32_t ans;
+
+    // Проверяем, открыт ли UART
+    if (!isOpen()) return RESULT_OPERATION_FAIL;
+
+    // Останавливаем предыдущую операцию
+    if (!isOpen()) return RESULT_OPERATION_FAIL;
+    ans = _sendCommand_IT(RPLIDAR_CMD_STOP,NULL,0);
+    return ans;
+
+    // Отправляем команду на сканирование
+
+        uint8_t command = force ? RPLIDAR_CMD_FORCE_SCAN : RPLIDAR_CMD_SCAN;
+        ans = _sendCommand_IT(command, NULL, 0);
+        if (IS_FAIL(ans)) return ans;
+
+    return RESULT_OK;
+}
+
+void RPLidar::startUart_IT(){
+	HAL_UART_Receive_IT(&huart2, uart_rx_buffer, 1);
+}
+
 float* RPLidar::getDist() {  // Аргумент по умолчанию здесь не указывается
     return minDist;
 }
@@ -306,6 +386,12 @@ void RPLidar::clearArray( float array[361]){
     }
 }
 
+void RPLidar::clearMinDist(){
+    for (int i = 0; i < sizeof(minDist) / sizeof(minDist[0]); ++i) {
+    	minDist[i] = 0.0f;
+    }
+}
+
 
 float RPLidar::getDist(int i) {  // Аргумент по умолчанию здесь не указывается
     return minDist[i];
@@ -317,9 +403,10 @@ float RPLidar::constrain(int32_t value,int32_t num1,int32_t num2){
 }
 
 
-void RPLidar::reWriteDist(){
+void RPLidar::reWriteDist() {
     for (int angle = 0; angle < 360; angle += 9) { // Шаг изменения угла 9 градусов
-        float minDistance = 20000.0f; // Инициализируем минимальное расстояние текущим значением
+        float sumDistance = 0.0f; // Сумма расстояний
+        int validCount = 0;       // Счётчик валидных значений
 
         // Определяем диапазон для поиска минимального расстояния
         int startAngle = angle - 4;
@@ -331,22 +418,27 @@ void RPLidar::reWriteDist(){
             int wrappedAngle = currentAngle;
             if (wrappedAngle < 0) {
                 wrappedAngle += 360; // Если угол отрицательный, добавляем 360
-            }
-            else if (wrappedAngle > 360) {
-                wrappedAngle -= 360; // Если угол больше 360, вычитаем 360
+            } else if (wrappedAngle >= 360) {
+                wrappedAngle -= 360; // Если угол больше или равен 360, вычитаем 360
             }
 
             // Проверяем, чтобы угол не выходил за пределы массива
             if (wrappedAngle >= 0 && wrappedAngle < 360) {
-                if (distances[wrappedAngle] < minDistance) {
-                    minDistance = distances[wrappedAngle];
+                float distance = distances[wrappedAngle];
+
+                // Учитываем только валидные расстояния (> 0)
+                if (distance > 0) {
+                    sumDistance += distance; // Добавляем расстояние к сумме
+                    ++validCount;            // Увеличиваем количество валидных значений
                 }
             }
         }
 
-        // Записываем минимальное расстояние в новый массив
-        if (minDistance != 20000.0f) {
-            minDist[angle] = minDistance;
+        // Если хотя бы 4 расстояния валидны, записываем среднее значение
+        if (validCount >= 4) {
+            minDist[angle] = sumDistance / validCount; // Среднее значение
+        } else {
+            minDist[angle] = 0.0f; // Если недостаточно валидных значений, записываем 0
         }
     }
 }
@@ -399,11 +491,12 @@ uint32_t RPLidar::waitPoint(uint32_t timeout) {
             // Сохраняем минимальное расстояние для каждого угла (от 0 до 360 градусов)
             float newAngle = _currentMeasurement.angle;
             float newDistance = _currentMeasurement.distance;
+            float quality =  _currentMeasurement.quality;
 
-				if (newAngle>=0&&newAngle<=360){
+				if (newAngle>=0&&newAngle<=360 &&quality>=20){
 					if (newDistance>MIN_RANGE_LID&&newDistance<MAX_RANGE_LID)
 						distances[(int)newAngle] = newDistance; // Сохраняем  расстояние
-					else distances[(int)newAngle] = 15000.0f;
+					else distances[(int)newAngle] = 0;
 				}
 
             reWriteDist();
@@ -459,19 +552,22 @@ void RPLidar::onReceive(uint8_t byte) {
 
     // Если все байты структуры считаны
     if (recvPos == sizeof(rplidar_response_measurement_node_t)) {
-        // Преобразуем байты в структуру измерений
-        rplidar_response_measurement_node_t *node = (rplidar_response_measurement_node_t *)nodebuf;
-
         // Вычисляем значения измерений
-        _currentMeasurement.distance = node->distance_q2 / 4.0f;
-        _currentMeasurement.angle = constrain((node->angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f, 0, 360);
-        _currentMeasurement.quality = (node->sync_quality >> RPLIDAR_RESP_MEASUREMENT_QUALITY_SHIFT);
-        _currentMeasurement.startBit = (node->sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT);
+        _currentMeasurement.distance = node.distance_q2 / 4.0f;
+        _currentMeasurement.angle = constrain((node.angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0f,0,360);
+        _currentMeasurement.quality = (node.sync_quality >> RPLIDAR_RESP_MEASUREMENT_QUALITY_SHIFT);
+        _currentMeasurement.startBit = (node.sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT);
 
-        // Сохраняем минимальное расстояние для каждого угла
-        if (_currentMeasurement.angle >= 0 && _currentMeasurement.angle <= 360) {
-            distances[(int)_currentMeasurement.angle] = _currentMeasurement.distance;
-        }
+        // Сохраняем минимальное расстояние для каждого угла (от 0 до 360 градусов)
+        float newAngle = _currentMeasurement.angle;
+        float newDistance = _currentMeasurement.distance;
+        float quality =  _currentMeasurement.quality;
+
+			if (newAngle>=0&&newAngle<=360 &&quality>=20){
+				if (newDistance>MIN_RANGE_LID&&newDistance<MAX_RANGE_LID)
+					distances[(int)newAngle] = newDistance; // Сохраняем  расстояние
+				else distances[(int)newAngle] = 0;
+			}
 
         // Обновляем минимальные расстояния
         reWriteDist();

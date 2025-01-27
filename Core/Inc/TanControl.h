@@ -29,7 +29,7 @@ public:
 
 	int32_t getErrorAngle(float *distances){
 		int32_t errorAngle = 1000;
-		float minDistance = 20000.0f;
+		float minDistance = (float)MAX_DIST;
 		for (int32_t i = 0; i < 360; i += 9) {
 
 			  if(distances[i]<minDistance&&distances[i]!=0){
@@ -42,8 +42,10 @@ public:
 
 	bool getEnemy(float *distances){
 		flagEnemy = false;
-		for (int32_t i = 0; i < 360; i ++) {
-			if(distances[i]>MIN_RANGE_LID&&distances[i]<MAX_RANGE_LID) flagEnemy = true;
+		for (int32_t i = 0; i < 360; i +=9) {
+			if(distances[i]>MIN_RANGE_LID&&distances[i]<MAX_RANGE_LID) {
+				flagEnemy = true;
+			}
 		}
 
 		return flagEnemy;

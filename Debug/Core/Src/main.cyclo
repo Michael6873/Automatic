@@ -3,12 +3,10 @@ cmath:241:3:constexpr float std::fabs(float)	1
 TCS3472.h:13:2:ColorSens::ColorSens()	1
 TCS3472.h:15:7:void ColorSens::init()	1
 TCS3472.h:27:11:uint16_t ColorSens::getColorRed()	1
-TCS3472.h:31:11:uint16_t ColorSens::getColorGreen()	1
-TCS3472.h:35:11:uint16_t ColorSens::getColorBlue()	1
 TCS3472.h:39:11:uint16_t ColorSens::getColorWhite()	1
 LineDetector.h:15:2:LineDetector::LineDetector()	1
 LineDetector.h:17:7:void LineDetector::init()	1
-LineDetector.h:20:7:void LineDetector::handler()	7
+LineDetector.h:20:7:void LineDetector::handler()	5
 new:174:33:void* operator new(std::size_t, void*)	1
 stl_deque.h:96:3:constexpr std::size_t std::__deque_buf_size(std::size_t)	2
 Encoder.h:9:2:Encoder::Encoder(TIM_HandleTypeDef*)	1
@@ -38,40 +36,43 @@ Telega.h:20:7:void Telega::setRobotSpeed(float, float)	1
 Telega.h:43:7:void Telega::setMotorSpeed(float, float)	1
 TanControl.h:30:10:int32_t TanControl::getErrorAngle(float*)	4
 TanControl.h:43:7:bool TanControl::getEnemy(float*)	4
-TanControl.h:51:10:int32_t TanControl::limitAng(int32_t)	3
+TanControl.h:53:10:int32_t TanControl::limitAng(int32_t)	3
 stl_queue.h:96:11:std::queue<ActionsQueue::RobotInstruction>::~queue()	1
 Telega.h:7:7:Telega::~Telega()	1
 TanControl.h:10:7:TanControl::TanControl()	1
-ActionsQueue.h:27:2:ActionsQueue::ActionsQueue()	1
-ActionsQueue.h:29:7:void ActionsQueue::init()	1
-ActionsQueue.h:34:7:void ActionsQueue::push(ACTIONS)	1
-ActionsQueue.h:37:7:void ActionsQueue::push(ACTIONS, float)	1
-ActionsQueue.h:45:7:void ActionsQueue::clear()	2
-ActionsQueue.h:51:7:bool ActionsQueue::isClear()	3
-ActionsQueue.h:63:7:void ActionsQueue::handler()	1
-ActionsQueue.h:71:10:int32_t ActionsQueue::checkEnemy()	2
-ActionsQueue.h:78:7:bool ActionsQueue::getEnemy()	1
-ActionsQueue.h:81:7:void ActionsQueue::fastCycle()	17
-ActionsQueue.h:159:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS)	1
-ActionsQueue.h:162:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS, float)	1
-ActionsQueue.h:23:7:ActionsQueue::~ActionsQueue()	1
+ActionsQueue.h:28:2:ActionsQueue::ActionsQueue()	1
+ActionsQueue.h:30:7:void ActionsQueue::init()	1
+ActionsQueue.h:36:7:void ActionsQueue::push(ACTIONS)	1
+ActionsQueue.h:39:7:void ActionsQueue::push(ACTIONS, float)	1
+ActionsQueue.h:47:7:void ActionsQueue::clear()	2
+ActionsQueue.h:53:7:bool ActionsQueue::isClear()	3
+ActionsQueue.h:65:7:void ActionsQueue::handler()	1
+ActionsQueue.h:69:7:void ActionsQueue::onReceive(uint8_t)	1
+ActionsQueue.h:73:10:int32_t ActionsQueue::checkEnemy()	2
+ActionsQueue.h:80:7:bool ActionsQueue::getEnemy()	1
+ActionsQueue.h:83:7:void ActionsQueue::fastCycle()	18
+ActionsQueue.h:166:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS)	1
+ActionsQueue.h:169:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS, float)	1
+ActionsQueue.h:24:7:ActionsQueue::~ActionsQueue()	1
 AutoPilot.h:21:2:AutoPilot::AutoPilot()	1
 AutoPilot.h:36:7:void AutoPilot::handler()	1
-AutoPilot.h:46:7:void AutoPilot::fastCycle()	21
-AutoPilot.h:124:7:void AutoPilot::init()	1
+AutoPilot.h:41:7:void AutoPilot::onReceive(uint8_t)	1
+AutoPilot.h:50:7:void AutoPilot::fastCycle()	21
+AutoPilot.h:130:7:void AutoPilot::init()	1
 main.cpp:95:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	2
-main.cpp:105:6:void init()	1
-main.cpp:132:5:int main()	1
-main.cpp:193:6:void SystemClock_Config()	3
-main.cpp:239:13:void MX_I2C1_Init()	2
-main.cpp:273:13:void MX_TIM1_Init()	4
-main.cpp:319:13:void MX_TIM2_Init()	3
-main.cpp:368:13:void MX_TIM3_Init()	7
-main.cpp:429:13:void MX_TIM4_Init()	3
-main.cpp:478:13:void MX_USART2_UART_Init()	2
-main.cpp:509:13:void MX_DMA_Init()	1
-main.cpp:530:13:void MX_GPIO_Init()	1
-main.cpp:584:6:void Error_Handler()	1
+main.cpp:105:6:void HAL_UART_RxCpltCallback(UART_HandleTypeDef*)	2
+main.cpp:118:6:void init()	1
+main.cpp:145:5:int main()	1
+main.cpp:206:6:void SystemClock_Config()	3
+main.cpp:252:13:void MX_I2C1_Init()	2
+main.cpp:286:13:void MX_TIM1_Init()	4
+main.cpp:332:13:void MX_TIM2_Init()	3
+main.cpp:381:13:void MX_TIM3_Init()	7
+main.cpp:442:13:void MX_TIM4_Init()	3
+main.cpp:491:13:void MX_USART2_UART_Init()	2
+main.cpp:522:13:void MX_DMA_Init()	1
+main.cpp:543:13:void MX_GPIO_Init()	1
+main.cpp:597:6:void Error_Handler()	1
 allocator.h:164:7:std::allocator< <template-parameter-1-1> >::allocator() [with _Tp = float]	1
 allocator.h:182:7:std::allocator< <template-parameter-1-1> >::~allocator() [with _Tp = float]	1
 stl_vector.h:678:7:std::vector<_Tp, _Alloc>::~vector() [with _Tp = float; _Alloc = std::allocator<float>]	1
@@ -225,6 +226,6 @@ stl_algobase.h:699:5:_BI2 std::__copy_move_backward_a2(_BI1, _BI1, _BI2) [with b
 stl_algobase.h:415:2:static _Tp* std::__copy_move<_IsMove, true, std::random_access_iterator_tag>::__copy_m(const _Tp*, const _Tp*, _Tp*) [with _Tp = ActionsQueue::RobotInstruction*; bool _IsMove = false]	2
 stl_algobase.h:680:2:static _Tp* std::__copy_move_backward<_IsMove, true, std::random_access_iterator_tag>::__copy_move_b(const _Tp*, const _Tp*, _Tp*) [with _Tp = ActionsQueue::RobotInstruction*; bool _IsMove = false]	2
 AutoPilot.h:19:7:AutoPilot::~AutoPilot()	1
-main.cpp:593:1:void __static_initialization_and_destruction_0(int, int)	5
-main.cpp:593:1:cpp)	1
-main.cpp:593:1:cpp)	1
+main.cpp:606:1:void __static_initialization_and_destruction_0(int, int)	5
+main.cpp:606:1:cpp)	1
+main.cpp:606:1:cpp)	1

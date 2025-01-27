@@ -87,6 +87,8 @@ public:
     // start the measurement operation
     uint32_t startScan(bool force = false, uint32_t timeout = RPLIDAR_DEFAULT_TIMEOUT*2);
 
+    uint32_t startScan_IT(bool force);
+
     // wait for one sample point to arrive
     uint32_t waitPoint(uint32_t timeout = RPLIDAR_DEFAULT_TIMEOUT);
 
@@ -99,6 +101,10 @@ public:
 
     void clearArray( float array[361]);
 
+    void clearMinDist();
+
+    void startUart_IT();
+
     void setDist(uint32_t i, float value);
 
     const RPLidarMeasurement & getCurrentPoint()
@@ -109,6 +115,7 @@ public:
 protected:
     void reWriteDist();
     uint32_t _sendCommand(uint8_t cmd, const void * payload, size_t payloadsize);
+    uint32_t _sendCommand_IT(uint8_t cmd, const void *payload, size_t payloadsize);
     uint32_t _waitResponseHeader(rplidar_ans_header_t * header, uint32_t timeout);
     float constrain(int32_t value,int32_t num1,int32_t num2);
 

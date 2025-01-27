@@ -34,8 +34,12 @@ public:
 
 
 	void handler() {
-		line.handler();
 		aQueue.handler();
+		line.handler();
+	}
+
+	void onReceive(uint8_t byte){
+		aQueue.onReceive(byte);
 	}
 
 	void reset() {
@@ -44,11 +48,11 @@ public:
 	}
 
 	void fastCycle(){
-		//		if (curState != IDLE) {
-		//			if (line.isCrossed()) {
-		//				curState = AVOID_LINE;
-		//			}
-		//		}
+//				if (curState != IDLE) {
+//					if (line.isCrossed()) {
+//						curState = AVOID_LINE;
+//					}
+//				}
 
 				ang = aQueue.checkEnemy();
 				switch (curState)
@@ -68,7 +72,7 @@ public:
 					}
 
 					if (aQueue.getEnemy()) {
-					//	curState = ATACK;
+						curState = ATACK;
 					}
 					break;
 
@@ -80,6 +84,9 @@ public:
 					if(abs(ang)>30&&abs(ang)<361){
 						if (aQueue.isClear()){
 							aQueue.push(ACTIONS::SET_SPEED_TURN);
+							aQueue.push(ACTIONS::DELAY,500);
+							aQueue.push(ACTIONS::STOP);
+							aQueue.push(ACTIONS::DELAY,1000);
 						}
 					}
 					else if (abs(ang)<30){
@@ -112,9 +119,8 @@ public:
 						aQueue.push(ACTIONS::TURN_LEFT);
 						aQueue.push(DELAY, 500);
 						aQueue.push(ACTIONS::GO_FORWARD);
-					if (aQueue.isClear()) {
+
 						curState = SEARCH;
-					}
 					break;
 				}
 

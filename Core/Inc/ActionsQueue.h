@@ -18,6 +18,7 @@ enum ACTIONS
 	SET_SPEED_TURN,
 	DELAY,
 	GO_FORWARD_MAX,
+	LID_RESET,
 };
 
 class ActionsQueue
@@ -29,6 +30,7 @@ public:
 	void init(){
 		lid.begin();
 		lid.startScan();
+	//	lid.startUart_IT();
 	}
 
 	void push(ACTIONS action) {
@@ -122,6 +124,10 @@ public:
 				telega.setRobotSpeed(-MAX_MOT_SPEED*0.7, 0);
 				rQueue.pop();
 				break;
+			case ACTIONS::LID_RESET:
+				lid.clearMinDist();
+				rQueue.pop();
+				break;
 			case ACTIONS::SET_SPEED_TURN:
 			        angLimit = checkEnemy(); // Ограничение угла [-180, 180]
 			        if(angLimit<360){
@@ -129,6 +135,7 @@ public:
 						spd.ang = TURN_SPEED*angLimit/fabs((float)angLimit); // Только угловое движение
 						telega.setRobotSpeed(spd.lin, -spd.ang); // Угловая скорость инвертирована
 			        }
+			    rQueue.pop();
 				break;
 			case ACTIONS::DELAY:
 				static uint32_t delayBegin = 0;

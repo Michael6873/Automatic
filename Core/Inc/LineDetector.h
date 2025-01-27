@@ -19,7 +19,7 @@ public:
 	}
 	void handler() {
 		if (HAL_GetTick() - lastMs > delayMs) {
-				if ((sens.getColorWhite() < whiteTh) && (sens.getColorRed() < redTh) && (sens.getColorGreen() < greenTh) && (sens.getColorBlue() < blueTh)) {
+				if ((sens.getColorWhite() < whiteTh) && (sens.getColorRed() < redTh) ) {
 					lineIsCrosed = true;
 				}
 				else {
