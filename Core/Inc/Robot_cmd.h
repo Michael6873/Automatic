@@ -21,7 +21,7 @@ extern TIM_HandleTypeDef htim4;
 #define HALF_CIRCLE 180
 
 #define MIN_RANGE_LID 200
-#define MAX_RANGE_LID 500
+#define MAX_RANGE_LID 210
 
 #define ZERO 0
 

@@ -68,7 +68,7 @@ public:
 					}
 
 					if (aQueue.getEnemy()) {
-						curState = ATACK;
+					//	curState = ATACK;
 					}
 					break;
 
@@ -77,12 +77,13 @@ public:
 						lastState = ATACK;
 						aQueue.clear();
 					}
-					if(abs(ang)>30){
-						aQueue.clear();
-						aQueue.push(ACTIONS::SET_SPEED_TURN);
+					if(abs(ang)>30&&abs(ang)<361){
+						if (aQueue.isClear()){
+							aQueue.push(ACTIONS::SET_SPEED_TURN);
+						}
 					}
 					else if (abs(ang)<30){
-						//curState = FIN_ATACK;
+						curState = FIN_ATACK;
 					}
 					if (!aQueue.getEnemy()) {
 						curState = SEARCH;
@@ -96,7 +97,7 @@ public:
 					}
 						aQueue.push(GO_FORWARD_MAX);
 
-						if (abs(ang)>30||!aQueue.getEnemy()){
+						if (abs(ang)>30&&abs(ang)<361||!aQueue.getEnemy()){
 							curState = SEARCH;
 						}
 

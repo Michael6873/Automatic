@@ -50,15 +50,15 @@ e:\st\stm32cubeide_1.12.0\stm32cubeide\plugins\com.st.stm32cube.ide.mcu.external
 ../Core/Inc/ActionsQueue.h:51:7:bool ActionsQueue::isClear()	16	static
 ../Core/Inc/ActionsQueue.h:63:7:void ActionsQueue::handler()	16	static
 ../Core/Inc/ActionsQueue.h:71:10:int32_t ActionsQueue::checkEnemy()	32	static
-../Core/Inc/ActionsQueue.h:79:7:bool ActionsQueue::getEnemy()	24	static
-../Core/Inc/ActionsQueue.h:82:7:void ActionsQueue::fastCycle()	56	static
-../Core/Inc/ActionsQueue.h:156:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS)	16	static
-../Core/Inc/ActionsQueue.h:159:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS, float)	24	static
+../Core/Inc/ActionsQueue.h:78:7:bool ActionsQueue::getEnemy()	24	static
+../Core/Inc/ActionsQueue.h:81:7:void ActionsQueue::fastCycle()	56	static
+../Core/Inc/ActionsQueue.h:159:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS)	16	static
+../Core/Inc/ActionsQueue.h:162:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS, float)	24	static
 ../Core/Inc/ActionsQueue.h:23:7:ActionsQueue::~ActionsQueue()	16	static
 ../Core/Inc/AutoPilot.h:21:2:AutoPilot::AutoPilot()	16	static
 ../Core/Inc/AutoPilot.h:36:7:void AutoPilot::handler()	16	static
 ../Core/Inc/AutoPilot.h:46:7:void AutoPilot::fastCycle()	16	static
-../Core/Inc/AutoPilot.h:123:7:void AutoPilot::init()	16	static
+../Core/Inc/AutoPilot.h:124:7:void AutoPilot::init()	16	static
 ../Core/Src/main.cpp:95:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	16	static
 ../Core/Src/main.cpp:105:6:void init()	8	static
 ../Core/Src/main.cpp:132:5:int main()	8	static

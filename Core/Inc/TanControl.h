@@ -28,7 +28,7 @@ public:
 	}
 
 	int32_t getErrorAngle(float *distances){
-		int32_t errorAngle = 0;
+		int32_t errorAngle = 1000;
 		float minDistance = 20000.0f;
 		for (int32_t i = 0; i < 360; i += 9) {
 

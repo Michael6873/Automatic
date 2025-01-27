@@ -50,15 +50,15 @@ ActionsQueue.h:45:7:void ActionsQueue::clear()	2
 ActionsQueue.h:51:7:bool ActionsQueue::isClear()	3
 ActionsQueue.h:63:7:void ActionsQueue::handler()	1
 ActionsQueue.h:71:10:int32_t ActionsQueue::checkEnemy()	2
-ActionsQueue.h:79:7:bool ActionsQueue::getEnemy()	1
-ActionsQueue.h:82:7:void ActionsQueue::fastCycle()	15
-ActionsQueue.h:156:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS)	1
-ActionsQueue.h:159:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS, float)	1
+ActionsQueue.h:78:7:bool ActionsQueue::getEnemy()	1
+ActionsQueue.h:81:7:void ActionsQueue::fastCycle()	17
+ActionsQueue.h:159:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS)	1
+ActionsQueue.h:162:3:ActionsQueue::RobotInstruction::RobotInstruction(ACTIONS, float)	1
 ActionsQueue.h:23:7:ActionsQueue::~ActionsQueue()	1
 AutoPilot.h:21:2:AutoPilot::AutoPilot()	1
 AutoPilot.h:36:7:void AutoPilot::handler()	1
-AutoPilot.h:46:7:void AutoPilot::fastCycle()	17
-AutoPilot.h:123:7:void AutoPilot::init()	1
+AutoPilot.h:46:7:void AutoPilot::fastCycle()	21
+AutoPilot.h:124:7:void AutoPilot::init()	1
 main.cpp:95:6:void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef*)	2
 main.cpp:105:6:void init()	1
 main.cpp:132:5:int main()	1

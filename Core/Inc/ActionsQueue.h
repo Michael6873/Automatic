@@ -70,9 +70,8 @@ public:
 
 	int32_t checkEnemy(){
 		ang  = tan.getErrorAngle(lid.getDist());
-		int32_t angLimit = 0;
-		if (ang) angLimit = tan.limitAng(ang);
-		else angLimit = 0;
+		int32_t angLimit = 1000;
+		if (ang<361)angLimit = tan.limitAng(ang);
 		return angLimit;
 	}
 
@@ -81,7 +80,9 @@ public:
 	}
 	void fastCycle() {
 
-		if(IS_OK(lid.waitPoint())) ;
+		if(!IS_OK(lid.waitPoint())){
+			lid.startScan(false, 500);
+		}
 		int32_t angLimit = 0;
 		if (rQueue.empty()) {
 			rQueue.push(RobotInstruction(IDLE));
@@ -123,9 +124,11 @@ public:
 				break;
 			case ACTIONS::SET_SPEED_TURN:
 			        angLimit = checkEnemy(); // Ограничение угла [-180, 180]
-				    spd.lin = 0.0f;
-				    spd.ang = TURN_SPEED*angLimit/fabs((float)angLimit); // Только угловое движение
-			        telega.setRobotSpeed(spd.lin, -spd.ang); // Угловая скорость инвертирована
+			        if(angLimit<360){
+						spd.lin = 0.0f;
+						spd.ang = TURN_SPEED*angLimit/fabs((float)angLimit); // Только угловое движение
+						telega.setRobotSpeed(spd.lin, -spd.ang); // Угловая скорость инвертирована
+			        }
 				break;
 			case ACTIONS::DELAY:
 				static uint32_t delayBegin = 0;
